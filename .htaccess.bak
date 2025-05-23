@@ -1,0 +1,17 @@
+# Basic .htaccess for MAMP
+RewriteEngine On
+
+# Remove .php extension from URLs
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
+
+# SEO friendly URLs for categories
+RewriteRule ^kategori/([^/]+)/?$ kategori.php?slug=$1 [NC,L,QSA]
+
+# SEO friendly URLs for products
+RewriteRule ^urun/([^/]+)/?$ urun.php?slug=$1 [NC,L,QSA]
+
+# Disable directory browsing
+Options -Indexes

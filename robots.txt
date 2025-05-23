@@ -1,0 +1,41 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: http://www.ecedekor.com.tr/sitemap.xml.php
+
+# Disallow admin areas
+Disallow: /admin/
+Disallow: /includes/
+
+# Disallow temporary and backup files
+Disallow: *.tmp$
+Disallow: *.bak$
+Disallow: *.log$
+Disallow: *.sql$
+
+# Allow important assets
+Allow: /assets/
+Allow: /assets/images/
+Allow: /assets/css/
+Allow: /assets/js/
+
+# Crawl-delay (optional)
+Crawl-delay: 1
+
+# Specific bot instructions
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Block malicious bots
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
