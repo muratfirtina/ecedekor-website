@@ -118,8 +118,8 @@ include 'includes/header.php';
     <div class="bg-white rounded-lg shadow-md card">
         <div class="p-6 border-b border-gray-200">
             <div class="flex items-center justify-between">
-                <h2 class="text-xl font-semibold text-gray-900">Ana Sayfa Bölümleri</h2>
-                <a href="?action=add" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                <h2 class="text-xl font-semibold text-black">Ana Sayfa Bölümleri</h2>
+                <a href="?action=add" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300">
                     <i class="fas fa-plus mr-2"></i>Yeni Bölüm
                 </a>
             </div>
@@ -155,7 +155,7 @@ include 'includes/header.php';
                                             </div>
                                         <?php endif; ?>
                                         <div>
-                                            <div class="text-sm font-semibold text-gray-900"><?php echo htmlspecialchars($sect['title']); ?></div>
+                                            <div class="text-sm font-semibold text-black"><?php echo htmlspecialchars($sect['title']); ?></div>
                                             <?php if ($sect['subtitle']): ?>
                                                 <div class="text-sm text-gray-500"><?php echo htmlspecialchars($sect['subtitle']); ?></div>
                                             <?php endif; ?>
@@ -172,7 +172,7 @@ include 'includes/header.php';
                                         'testimonials' => 'Yorumlar'
                                     ];
                                     $typeColors = [
-                                        'hero' => 'bg-blue-100 text-blue-800',
+                                        'hero' => 'bg-red-100 text-red-800',
                                         'carousel' => 'bg-purple-100 text-purple-800',
                                         'about' => 'bg-green-100 text-green-800',
                                         'features' => 'bg-orange-100 text-orange-800',
@@ -208,7 +208,7 @@ include 'includes/header.php';
                                                 class="text-gray-600 hover:text-gray-700" title="Önizle">
                                             <i class="fas fa-eye"></i>
                                         </button>
-                                        <a href="?action=edit&id=<?php echo $sect['id']; ?>" class="text-blue-600 hover:text-blue-700" title="Düzenle">
+                                        <a href="?action=edit&id=<?php echo $sect['id']; ?>" class="text-red-600 hover:text-red-700" title="Düzenle">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <a href="?action=delete&id=<?php echo $sect['id']; ?>" 
@@ -230,7 +230,7 @@ include 'includes/header.php';
     <!-- Add/Edit Section Form -->
     <div class="bg-white rounded-lg shadow-md p-6 card">
         <div class="mb-6">
-            <h2 class="text-xl font-semibold text-gray-900">
+            <h2 class="text-xl font-semibold text-black">
                 <?php echo $action === 'add' ? 'Yeni Bölüm Ekle' : 'Bölüm Düzenle'; ?>
             </h2>
         </div>
@@ -242,7 +242,7 @@ include 'includes/header.php';
                 <div>
                     <label for="section_type" class="block text-sm font-medium text-gray-700 mb-2">Bölüm Türü *</label>
                     <select name="section_type" id="section_type" required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
                         <option value="">Bölüm türü seçin</option>
                         <option value="hero" <?php echo ($section && $section['section_type'] === 'hero') ? 'selected' : ''; ?>>Hero Bölümü</option>
                         <option value="carousel" <?php echo ($section && $section['section_type'] === 'carousel') ? 'selected' : ''; ?>>Carousel</option>
@@ -256,7 +256,7 @@ include 'includes/header.php';
                     <label for="sort_order" class="block text-sm font-medium text-gray-700 mb-2">Sıra Numarası</label>
                     <input type="number" name="sort_order" id="sort_order"
                            value="<?php echo $section ? $section['sort_order'] : '0'; ?>"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                            placeholder="0">
                 </div>
             </div>
@@ -265,7 +265,7 @@ include 'includes/header.php';
                 <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Başlık *</label>
                 <input type="text" name="title" id="title" required
                        value="<?php echo $section ? htmlspecialchars($section['title']) : ''; ?>"
-                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                        placeholder="Bölüm başlığını girin">
             </div>
             
@@ -273,14 +273,14 @@ include 'includes/header.php';
                 <label for="subtitle" class="block text-sm font-medium text-gray-700 mb-2">Alt Başlık</label>
                 <input type="text" name="subtitle" id="subtitle"
                        value="<?php echo $section ? htmlspecialchars($section['subtitle']) : ''; ?>"
-                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                        placeholder="Alt başlık girin">
             </div>
             
             <div>
                 <label for="content" class="block text-sm font-medium text-gray-700 mb-2">İçerik</label>
                 <textarea name="content" id="content" rows="6"
-                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                           placeholder="Bölüm içeriğini yazın..."><?php echo $section ? htmlspecialchars($section['content']) : ''; ?></textarea>
             </div>
             
@@ -289,7 +289,7 @@ include 'includes/header.php';
                     <label for="button_text" class="block text-sm font-medium text-gray-700 mb-2">Buton Metni</label>
                     <input type="text" name="button_text" id="button_text"
                            value="<?php echo $section ? htmlspecialchars($section['button_text']) : ''; ?>"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                            placeholder="Buton metnini girin">
                 </div>
                 
@@ -297,7 +297,7 @@ include 'includes/header.php';
                     <label for="button_link" class="block text-sm font-medium text-gray-700 mb-2">Buton Linki</label>
                     <input type="url" name="button_link" id="button_link"
                            value="<?php echo $section ? htmlspecialchars($section['button_link']) : ''; ?>"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                            placeholder="Buton linkini girin">
                 </div>
             </div>
@@ -306,7 +306,7 @@ include 'includes/header.php';
                 <label for="image" class="block text-sm font-medium text-gray-700 mb-2">Bölüm Görseli</label>
                 <input type="file" name="image" id="image" accept="image/*"
                        onchange="previewImage(this, 'imagePreview')"
-                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
                 <p class="text-sm text-gray-500 mt-1">Desteklenen formatlar: JPG, PNG, GIF. Maksimum boyut: 5MB</p>
                 
                 <?php if ($section && $section['image']): ?>
@@ -325,14 +325,14 @@ include 'includes/header.php';
             <div class="flex items-center">
                 <input type="checkbox" name="is_active" id="is_active" value="1"
                        <?php echo (!$section || $section['is_active']) ? 'checked' : ''; ?>
-                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                       class="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded">
                 <label for="is_active" class="ml-2 block text-sm text-gray-700">
                     Aktif (Ana sayfada gösterilsin)
                 </label>
             </div>
             
             <div class="flex space-x-4">
-                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition duration-300">
                     <i class="fas fa-save mr-2"></i>
                     <?php echo $action === 'add' ? 'Bölüm Ekle' : 'Değişiklikleri Kaydet'; ?>
                 </button>
@@ -349,7 +349,7 @@ include 'includes/header.php';
     <div class="bg-white rounded-2xl max-w-4xl w-full max-h-96 overflow-y-auto">
         <div class="p-6">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-semibold text-gray-900">Bölüm Önizleme</h3>
+                <h3 class="text-xl font-semibold text-black">Bölüm Önizleme</h3>
                 <button onclick="closePreview()" class="text-gray-400 hover:text-gray-600">
                     <i class="fas fa-times text-xl"></i>
                 </button>
@@ -373,21 +373,21 @@ function previewSection(section) {
             
             <div class="space-y-3">
                 <div class="flex items-center justify-between">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                         ${section.section_type.charAt(0).toUpperCase() + section.section_type.slice(1)}
                     </span>
                     <span class="text-sm text-gray-500">Sıra: ${section.sort_order}</span>
                 </div>
                 
-                <h2 class="text-2xl font-bold text-gray-900">${section.title}</h2>
+                <h2 class="text-2xl font-bold text-black">${section.title}</h2>
                 
-                ${section.subtitle ? `<h3 class="text-lg text-blue-600 font-semibold">${section.subtitle}</h3>` : ''}
+                ${section.subtitle ? `<h3 class="text-lg text-red-600 font-semibold">${section.subtitle}</h3>` : ''}
                 
                 ${section.content ? `<p class="text-gray-700 leading-relaxed">${section.content}</p>` : ''}
                 
                 ${section.button_text ? `
                     <div class="pt-4">
-                        <span class="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold">
+                        <span class="inline-block bg-red-600 text-white px-6 py-2 rounded-lg font-semibold">
                             ${section.button_text}
                         </span>
                         ${section.button_link ? `<div class="text-xs text-gray-500 mt-1">Link: ${section.button_link}</div>` : ''}

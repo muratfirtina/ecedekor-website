@@ -183,3 +183,12 @@ INSERT INTO `site_settings` (`setting_key`, `setting_value`, `setting_type`) VAL
 ('company_founded', '1998', 'text'),
 ('logo_path', '/assets/images/logo.png', 'image'),
 ('hero_image', '/assets/images/hero-bg.jpg', 'image');
+
+ALTER TABLE `product_variants` ADD COLUMN `color_code` VARCHAR(7) DEFAULT NULL AFTER `color`;
+
+-- Mevcut varyantlara örnek renk kodları ekleyin
+UPDATE `product_variants` SET `color_code` = '#F5DEB3' WHERE `color` = 'Doğal';
+UPDATE `product_variants` SET `color_code` = '#8B4513' WHERE `color` = 'Meşe';
+UPDATE `product_variants` SET `color_code` = '#654321' WHERE `color` = 'Ceviz';
+UPDATE `product_variants` SET `color_code` = '#000000' WHERE `color` = 'Siyah';
+UPDATE `product_variants` SET `color_code` = '#FFFFFF' WHERE `color` = 'Beyaz';

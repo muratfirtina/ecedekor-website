@@ -55,7 +55,7 @@ if ($_POST) {
             <div class="mb-4">
                 <i class="fas fa-shield-alt text-4xl text-indigo-600"></i>
             </div>
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Admin Paneli</h1>
+            <h1 class="text-3xl font-bold text-black mb-2">Admin Paneli</h1>
             <p class="text-gray-600">ECEDEKOR Yönetim Sistemi</p>
         </div>
         

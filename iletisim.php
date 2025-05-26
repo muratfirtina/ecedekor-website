@@ -55,15 +55,15 @@ include 'includes/header.php';
 ?>
 
 <!-- Hero Section -->
-<section class="relative py-24 bg-gradient-to-r from-blue-600 to-purple-700 overflow-hidden">
+<section class="relative py-24 bg-gradient-to-r from-red-600 to-black overflow-hidden">
     <div class="absolute inset-0 bg-black opacity-20"></div>
     <!-- Hero Background Image -->
     <div class="absolute inset-0 z-0">
         <?php if (getSetting('contact_image')): ?>
             <img src="<?php echo getSetting('contact_image'); ?>" class="w-full h-full object-cover" alt="Hero Background">
-            <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-700 opacity-80"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-red-600 to-black opacity-80"></div>
         <?php else: ?>
-            <div class="w-full h-full bg-gradient-to-r from-blue-600 to-purple-700"></div>
+            <div class="w-full h-full bg-gradient-to-r from-red-600 to-black"></div>
         <?php endif; ?>
     </div>
     
@@ -77,11 +77,11 @@ include 'includes/header.php';
             <!-- Quick Contact -->
             <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
                 <a href="tel:<?php echo getSetting('company_phone'); ?>" 
-                   class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
+                   class="bg-white text-red-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
                     <i class="fas fa-phone mr-2"></i><?php echo getSetting('company_phone'); ?>
                 </a>
                 <a href="mailto:<?php echo getSetting('company_email'); ?>" 
-                   class="border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition duration-300">
+                   class="border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-red-600 transition duration-300">
                     <i class="fas fa-envelope mr-2"></i><?php echo getSetting('company_email'); ?>
                 </a>
             </div>
@@ -105,16 +105,16 @@ include 'includes/header.php';
             <!-- Contact Info -->
             <div class="lg:col-span-1">
                 <div class="bg-white rounded-2xl p-8 shadow-lg h-full">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-8">İletişim Bilgileri</h2>
+                    <h2 class="text-2xl font-bold text-black mb-8">İletişim Bilgileri</h2>
                     
                     <div class="space-y-6">
                         <!-- Address -->
                         <div class="flex items-start">
-                            <div class="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
-                                <i class="fas fa-map-marker-alt text-blue-600"></i>
+                            <div class="flex-shrink-0 w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-map-marker-alt text-red-600"></i>
                             </div>
                             <div>
-                                <h3 class="font-semibold text-gray-900 mb-2">Adresimiz</h3>
+                                <h3 class="font-semibold text-black mb-2">Adresimiz</h3>
                                 <p class="text-gray-600"><?php echo getSetting('company_address'); ?></p>
                             </div>
                         </div>
@@ -125,7 +125,7 @@ include 'includes/header.php';
                                 <i class="fas fa-phone text-green-600"></i>
                             </div>
                             <div>
-                                <h3 class="font-semibold text-gray-900 mb-2">Telefon</h3>
+                                <h3 class="font-semibold text-black mb-2">Telefon</h3>
                                 <a href="tel:<?php echo getSetting('company_phone'); ?>" 
                                    class="text-gray-600 hover:text-green-600 transition duration-300">
                                     <?php echo getSetting('company_phone'); ?>
@@ -139,7 +139,7 @@ include 'includes/header.php';
                                 <i class="fas fa-envelope text-purple-600"></i>
                             </div>
                             <div>
-                                <h3 class="font-semibold text-gray-900 mb-2">E-posta</h3>
+                                <h3 class="font-semibold text-black mb-2">E-posta</h3>
                                 <a href="mailto:<?php echo getSetting('company_email'); ?>" 
                                    class="text-gray-600 hover:text-purple-600 transition duration-300">
                                     <?php echo getSetting('company_email'); ?>
@@ -153,7 +153,7 @@ include 'includes/header.php';
                                 <i class="fas fa-clock text-orange-600"></i>
                             </div>
                             <div>
-                                <h3 class="font-semibold text-gray-900 mb-2">Çalışma Saatleri</h3>
+                                <h3 class="font-semibold text-black mb-2">Çalışma Saatleri</h3>
                                 <div class="text-gray-600">
                                     <div>Pazartesi - Cuma: 08:00 - 18:00</div>
                                     <div>Cumartesi: 09:00 - 14:00</div>
@@ -165,15 +165,15 @@ include 'includes/header.php';
                     
                     <!-- Social Media -->
                     <div class="mt-8 pt-8 border-t border-gray-200">
-                        <h3 class="font-semibold text-gray-900 mb-4">Sosyal Medya</h3>
+                        <h3 class="font-semibold text-black mb-4">Sosyal Medya</h3>
                         <div class="flex space-x-4">
-                            <a href="#" class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 hover:bg-blue-200 transition duration-300">
+                            <a href="#" class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center text-red-600 hover:bg-red-200 transition duration-300">
                                 <i class="fab fa-facebook-f"></i>
                             </a>
                             <a href="#" class="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center text-pink-600 hover:bg-pink-200 transition duration-300">
                                 <i class="fab fa-instagram"></i>
                             </a>
-                            <a href="#" class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-700 hover:bg-blue-200 transition duration-300">
+                            <a href="#" class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center text-red-700 hover:bg-red-200 transition duration-300">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
                             <a href="https://wa.me/905551234567" class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-green-600 hover:bg-green-200 transition duration-300">
@@ -187,7 +187,7 @@ include 'includes/header.php';
             <!-- Contact Form -->
             <div class="lg:col-span-2">
                 <div class="bg-white rounded-2xl p-8 shadow-lg">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-8">Bize Mesaj Gönderin</h2>
+                    <h2 class="text-2xl font-bold text-black mb-8">Bize Mesaj Gönderin</h2>
                     
                     <?php if ($success): ?>
                         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6">
@@ -215,7 +215,7 @@ include 'includes/header.php';
                                 <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Ad Soyad *</label>
                                 <input type="text" name="name" id="name" required
                                        value="<?php echo htmlspecialchars($_POST['name'] ?? ''); ?>"
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition duration-300"
                                        placeholder="Adınızı ve soyadınızı girin">
                             </div>
                             
@@ -223,7 +223,7 @@ include 'includes/header.php';
                                 <label for="email" class="block text-sm font-medium text-gray-700 mb-2">E-posta *</label>
                                 <input type="email" name="email" id="email" required
                                        value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>"
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition duration-300"
                                        placeholder="E-posta adresinizi girin">
                             </div>
                         </div>
@@ -233,7 +233,7 @@ include 'includes/header.php';
                                 <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Telefon</label>
                                 <input type="tel" name="phone" id="phone"
                                        value="<?php echo htmlspecialchars($_POST['phone'] ?? ''); ?>"
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition duration-300"
                                        placeholder="Telefon numaranızı girin">
                             </div>
                             
@@ -241,7 +241,7 @@ include 'includes/header.php';
                                 <label for="company" class="block text-sm font-medium text-gray-700 mb-2">Şirket</label>
                                 <input type="text" name="company" id="company"
                                        value="<?php echo htmlspecialchars($_POST['company'] ?? ''); ?>"
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition duration-300"
                                        placeholder="Şirket adınızı girin">
                             </div>
                         </div>
@@ -249,7 +249,7 @@ include 'includes/header.php';
                         <div>
                             <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">Konu</label>
                             <select name="subject" id="subject"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition duration-300">
                                 <option value="">Konu seçin</option>
                                 <option value="Ürün Bilgisi" <?php echo ($_POST['subject'] ?? '') === 'Ürün Bilgisi' ? 'selected' : ''; ?>>Ürün Bilgisi</option>
                                 <option value="Fiyat Teklifi" <?php echo ($_POST['subject'] ?? '') === 'Fiyat Teklifi' ? 'selected' : ''; ?>>Fiyat Teklifi</option>
@@ -262,8 +262,8 @@ include 'includes/header.php';
                         <?php if ($selectedProduct): ?>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">İlgili Ürün</label>
-                                <div class="px-4 py-3 bg-blue-50 border border-blue-200 rounded-lg">
-                                    <span class="text-blue-800 font-medium"><?php echo htmlspecialchars($selectedProduct); ?></span>
+                                <div class="px-4 py-3 bg-red-50 border border-red-200 rounded-lg">
+                                    <span class="text-red-800 font-medium"><?php echo htmlspecialchars($selectedProduct); ?></span>
                                 </div>
                                 <input type="hidden" name="product" value="<?php echo htmlspecialchars($selectedProduct); ?>">
                             </div>
@@ -272,22 +272,22 @@ include 'includes/header.php';
                         <div>
                             <label for="message" class="block text-sm font-medium text-gray-700 mb-2">Mesajınız *</label>
                             <textarea name="message" id="message" rows="6" required
-                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition duration-300"
                                       placeholder="Mesajınızı buraya yazın..."><?php echo htmlspecialchars($_POST['message'] ?? ''); ?></textarea>
                         </div>
                         
                         <!-- KVKK Consent -->
                         <div class="flex items-start">
                             <input type="checkbox" name="kvkk_consent" id="kvkk_consent" required
-                                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mt-1">
+                                   class="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded mt-1">
                             <label for="kvkk_consent" class="ml-3 text-sm text-gray-600">
-                                <a href="#" class="text-blue-600 hover:text-blue-700">KVKK Aydınlatma Metni</a>'ni okudum ve 
+                                <a href="#" class="text-red-600 hover:text-red-700">KVKK Aydınlatma Metni</a>'ni okudum ve 
                                 kişisel verilerimin işlenmesini kabul ediyorum.
                             </label>
                         </div>
                         
                         <button type="submit" 
-                                class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition duration-300 font-semibold">
+                                class="w-full bg-red-600 text-white py-3 px-6 rounded-lg hover:bg-red-700 focus:ring-4 focus:ring-red-200 transition duration-300 font-semibold">
                             <i class="fas fa-paper-plane mr-2"></i>Mesaj Gönder
                         </button>
                     </form>
@@ -301,7 +301,7 @@ include 'includes/header.php';
 <section class="py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Bizi Ziyaret Edin</h2>
+            <h2 class="text-3xl font-bold text-black mb-4">Bizi Ziyaret Edin</h2>
             <p class="text-gray-600">Ofisimize gelerek ürünlerimizi yakından inceleyebilirsiniz</p>
         </div>
         
@@ -320,7 +320,7 @@ include 'includes/header.php';
             
             <!-- Overlay with address info -->
             <div class="absolute bottom-4 left-4 bg-white rounded-lg p-4 shadow-lg max-w-sm">
-                <h3 class="font-semibold text-gray-900 mb-2">ECEDEKOR</h3>
+                <h3 class="font-semibold text-black mb-2">ECEDEKOR</h3>
                 <p class="text-sm text-gray-600"><?php echo getSetting('company_address'); ?></p>
             </div>
         </div>
@@ -331,7 +331,7 @@ include 'includes/header.php';
 <section class="py-20 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Sıkça Sorulan Sorular</h2>
+            <h2 class="text-3xl font-bold text-black mb-4">Sıkça Sorulan Sorular</h2>
             <p class="text-gray-600">En çok merak edilen sorulara yanıt bulun</p>
         </div>
         
@@ -340,7 +340,7 @@ include 'includes/header.php';
                 <!-- FAQ 1 -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
                     <button @click="activeAccordion = activeAccordion === 1 ? null : 1" 
-                            class="w-full px-6 py-4 text-left font-semibold text-gray-900 hover:bg-gray-50 transition duration-300 flex items-center justify-between">
+                            class="w-full px-6 py-4 text-left font-semibold text-black hover:bg-gray-50 transition duration-300 flex items-center justify-between">
                         <span>Ürünlerinizin kalite garantisi var mı?</span>
                         <i class="fas fa-chevron-down transition-transform duration-300" 
                            :class="{ 'rotate-180': activeAccordion === 1 }"></i>
@@ -353,7 +353,7 @@ include 'includes/header.php';
                 <!-- FAQ 2 -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
                     <button @click="activeAccordion = activeAccordion === 2 ? null : 2" 
-                            class="w-full px-6 py-4 text-left font-semibold text-gray-900 hover:bg-gray-50 transition duration-300 flex items-center justify-between">
+                            class="w-full px-6 py-4 text-left font-semibold text-black hover:bg-gray-50 transition duration-300 flex items-center justify-between">
                         <span>Minimum sipariş miktarı var mı?</span>
                         <i class="fas fa-chevron-down transition-transform duration-300" 
                            :class="{ 'rotate-180': activeAccordion === 2 }"></i>
@@ -366,7 +366,7 @@ include 'includes/header.php';
                 <!-- FAQ 3 -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
                     <button @click="activeAccordion = activeAccordion === 3 ? null : 3" 
-                            class="w-full px-6 py-4 text-left font-semibold text-gray-900 hover:bg-gray-50 transition duration-300 flex items-center justify-between">
+                            class="w-full px-6 py-4 text-left font-semibold text-black hover:bg-gray-50 transition duration-300 flex items-center justify-between">
                         <span>Kargo süresi ne kadar?</span>
                         <i class="fas fa-chevron-down transition-transform duration-300" 
                            :class="{ 'rotate-180': activeAccordion === 3 }"></i>
@@ -381,7 +381,7 @@ include 'includes/header.php';
                 <!-- FAQ 4 -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
                     <button @click="activeAccordion = activeAccordion === 4 ? null : 4" 
-                            class="w-full px-6 py-4 text-left font-semibold text-gray-900 hover:bg-gray-50 transition duration-300 flex items-center justify-between">
+                            class="w-full px-6 py-4 text-left font-semibold text-black hover:bg-gray-50 transition duration-300 flex items-center justify-between">
                         <span>İhracat yapıyor musunuz?</span>
                         <i class="fas fa-chevron-down transition-transform duration-300" 
                            :class="{ 'rotate-180': activeAccordion === 4 }"></i>
@@ -394,7 +394,7 @@ include 'includes/header.php';
                 <!-- FAQ 5 -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
                     <button @click="activeAccordion = activeAccordion === 5 ? null : 5" 
-                            class="w-full px-6 py-4 text-left font-semibold text-gray-900 hover:bg-gray-50 transition duration-300 flex items-center justify-between">
+                            class="w-full px-6 py-4 text-left font-semibold text-black hover:bg-gray-50 transition duration-300 flex items-center justify-between">
                         <span>Teknik destek sağlıyor musunuz?</span>
                         <i class="fas fa-chevron-down transition-transform duration-300" 
                            :class="{ 'rotate-180': activeAccordion === 5 }"></i>
@@ -407,7 +407,7 @@ include 'includes/header.php';
                 <!-- FAQ 6 -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
                     <button @click="activeAccordion = activeAccordion === 6 ? null : 6" 
-                            class="w-full px-6 py-4 text-left font-semibold text-gray-900 hover:bg-gray-50 transition duration-300 flex items-center justify-between">
+                            class="w-full px-6 py-4 text-left font-semibold text-black hover:bg-gray-50 transition duration-300 flex items-center justify-between">
                         <span>Özel renk üretimi yapıyor musunuz?</span>
                         <i class="fas fa-chevron-down transition-transform duration-300" 
                            :class="{ 'rotate-180': activeAccordion === 6 }"></i>

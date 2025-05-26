@@ -122,8 +122,8 @@ include 'includes/header.php';
     <div class="bg-white rounded-lg shadow-md card">
         <div class="p-6 border-b border-gray-200">
             <div class="flex items-center justify-between">
-                <h2 class="text-xl font-semibold text-gray-900">Müşteri Yorumları</h2>
-                <a href="?action=add" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                <h2 class="text-xl font-semibold text-black">Müşteri Yorumları</h2>
+                <a href="?action=add" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300">
                     <i class="fas fa-plus mr-2"></i>Yeni Yorum
                 </a>
             </div>
@@ -160,7 +160,7 @@ include 'includes/header.php';
                                             </div>
                                         <?php endif; ?>
                                         <div>
-                                            <div class="text-sm font-semibold text-gray-900"><?php echo htmlspecialchars($test['name']); ?></div>
+                                            <div class="text-sm font-semibold text-black"><?php echo htmlspecialchars($test['name']); ?></div>
                                             <?php if ($test['company']): ?>
                                                 <div class="text-sm text-gray-500"><?php echo htmlspecialchars($test['company']); ?></div>
                                             <?php endif; ?>
@@ -206,7 +206,7 @@ include 'includes/header.php';
                                                 class="text-gray-600 hover:text-gray-700" title="Önizle">
                                             <i class="fas fa-eye"></i>
                                         </button>
-                                        <a href="?action=edit&id=<?php echo $test['id']; ?>" class="text-blue-600 hover:text-blue-700" title="Düzenle">
+                                        <a href="?action=edit&id=<?php echo $test['id']; ?>" class="text-red-600 hover:text-red-700" title="Düzenle">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <a href="?action=delete&id=<?php echo $test['id']; ?>" 
@@ -228,7 +228,7 @@ include 'includes/header.php';
     <!-- Add/Edit Testimonial Form -->
     <div class="bg-white rounded-lg shadow-md p-6 card">
         <div class="mb-6">
-            <h2 class="text-xl font-semibold text-gray-900">
+            <h2 class="text-xl font-semibold text-black">
                 <?php echo $action === 'add' ? 'Yeni Yorum Ekle' : 'Yorum Düzenle'; ?>
             </h2>
         </div>
@@ -241,7 +241,7 @@ include 'includes/header.php';
                     <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Müşteri Adı *</label>
                     <input type="text" name="name" id="name" required
                            value="<?php echo $testimonial ? htmlspecialchars($testimonial['name']) : ''; ?>"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                            placeholder="Müşteri adını girin">
                 </div>
                 
@@ -249,7 +249,7 @@ include 'includes/header.php';
                     <label for="company" class="block text-sm font-medium text-gray-700 mb-2">Şirket</label>
                     <input type="text" name="company" id="company"
                            value="<?php echo $testimonial ? htmlspecialchars($testimonial['company']) : ''; ?>"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                            placeholder="Şirket adını girin">
                 </div>
             </div>
@@ -259,14 +259,14 @@ include 'includes/header.php';
                     <label for="position" class="block text-sm font-medium text-gray-700 mb-2">Pozisyon</label>
                     <input type="text" name="position" id="position"
                            value="<?php echo $testimonial ? htmlspecialchars($testimonial['position']) : ''; ?>"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                            placeholder="Pozisyon bilgisini girin">
                 </div>
                 
                 <div>
                     <label for="rating" class="block text-sm font-medium text-gray-700 mb-2">Puanlama *</label>
                     <select name="rating" id="rating" required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
                         <?php for ($i = 5; $i >= 1; $i--): ?>
                             <option value="<?php echo $i; ?>" 
                                     <?php echo ($testimonial && $testimonial['rating'] == $i) || (!$testimonial && $i == 5) ? 'selected' : ''; ?>>
@@ -280,7 +280,7 @@ include 'includes/header.php';
                     <label for="sort_order" class="block text-sm font-medium text-gray-700 mb-2">Sıra Numarası</label>
                     <input type="number" name="sort_order" id="sort_order"
                            value="<?php echo $testimonial ? $testimonial['sort_order'] : '0'; ?>"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                            placeholder="0">
                 </div>
             </div>
@@ -288,7 +288,7 @@ include 'includes/header.php';
             <div>
                 <label for="content" class="block text-sm font-medium text-gray-700 mb-2">Yorum İçeriği *</label>
                 <textarea name="content" id="content" rows="6" required
-                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                           placeholder="Müşteri yorumunu buraya yazın..."><?php echo $testimonial ? htmlspecialchars($testimonial['content']) : ''; ?></textarea>
                 <p class="text-sm text-gray-500 mt-1">Müşterinin ürün veya hizmet hakkındaki görüşlerini yazın</p>
             </div>
@@ -297,7 +297,7 @@ include 'includes/header.php';
                 <label for="image" class="block text-sm font-medium text-gray-700 mb-2">Müşteri Fotoğrafı</label>
                 <input type="file" name="image" id="image" accept="image/*"
                        onchange="previewImage(this, 'imagePreview')"
-                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
                 <p class="text-sm text-gray-500 mt-1">Desteklenen formatlar: JPG, PNG, GIF. Maksimum boyut: 5MB</p>
                 
                 <?php if ($testimonial && $testimonial['image']): ?>
@@ -313,14 +313,14 @@ include 'includes/header.php';
             <div class="flex items-center">
                 <input type="checkbox" name="is_active" id="is_active" value="1"
                        <?php echo (!$testimonial || $testimonial['is_active']) ? 'checked' : ''; ?>
-                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                       class="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded">
                 <label for="is_active" class="ml-2 block text-sm text-gray-700">
                     Aktif (Ana sayfada gösterilsin)
                 </label>
             </div>
             
             <div class="flex space-x-4">
-                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition duration-300">
                     <i class="fas fa-save mr-2"></i>
                     <?php echo $action === 'add' ? 'Yorum Ekle' : 'Değişiklikleri Kaydet'; ?>
                 </button>
@@ -337,7 +337,7 @@ include 'includes/header.php';
     <div class="bg-white rounded-2xl max-w-2xl w-full max-h-96 overflow-y-auto">
         <div class="p-6">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-semibold text-gray-900">Yorum Önizleme</h3>
+                <h3 class="text-xl font-semibold text-black">Yorum Önizleme</h3>
                 <button onclick="closeTestimonialPreview()" class="text-gray-400 hover:text-gray-600">
                     <i class="fas fa-times text-xl"></i>
                 </button>
@@ -370,7 +370,7 @@ function showTestimonialPreview(testimonial) {
                 </div>`
             }
             <div>
-                <div class="font-semibold text-gray-900 text-lg">${testimonial.name}</div>
+                <div class="font-semibold text-black text-lg">${testimonial.name}</div>
                 ${testimonial.company ? `<div class="text-gray-600">${testimonial.company}</div>` : ''}
                 ${testimonial.position ? `<div class="text-sm text-gray-500">${testimonial.position}</div>` : ''}
             </div>
@@ -380,7 +380,7 @@ function showTestimonialPreview(testimonial) {
             ${starsHtml}
         </div>
         
-        <blockquote class="text-gray-700 italic border-l-4 border-blue-500 pl-4">
+        <blockquote class="text-gray-700 italic border-l-4 border-red-500 pl-4">
             "${testimonial.content}"
         </blockquote>
         

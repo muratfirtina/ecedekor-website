@@ -35,6 +35,16 @@ $products = fetchAll("
     ORDER BY p.sort_order, p.name
 ", $params);
 
+// Get product variants with color codes for each product
+$productVariants = [];
+foreach ($products as $product) {
+    $productVariants[$product['id']] = fetchAll("
+        SELECT id, name, color, color_code FROM product_variants 
+        WHERE product_id = ? AND is_active = 1 AND color_code IS NOT NULL 
+        ORDER BY sort_order, name LIMIT 5
+    ", [$product['id']]);
+}
+
 // Get categories for filter
 $categories = fetchAll("SELECT * FROM categories WHERE is_active = 1 ORDER BY sort_order");
 
@@ -48,7 +58,7 @@ include 'includes/header.php';
 ?>
 
 <!-- Page Header -->
-<section class="bg-gradient-to-r from-blue-600 to-purple-700 py-20">
+<section class="bg-gradient-to-r from-red-600 to-black py-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
         <h1 class="text-4xl md:text-5xl font-bold mb-4">
             <?php echo $selectedCategory ? htmlspecialchars($selectedCategory['name']) : 'Ürünlerimiz'; ?>
@@ -91,7 +101,7 @@ include 'includes/header.php';
                     <input type="text" name="arama" 
                            value="<?php echo htmlspecialchars($search); ?>"
                            placeholder="Ürün ara..." 
-                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <i class="fas fa-search text-gray-400"></i>
                     </div>
@@ -104,12 +114,12 @@ include 'includes/header.php';
             <!-- Category Filter -->
             <div class="flex flex-wrap gap-2">
                 <a href="<?php echo BASE_URL; ?>/urunler.php<?php echo $search ? '?arama=' . urlencode($search) : ''; ?>" 
-                   class="px-4 py-2 rounded-full text-sm font-medium transition duration-300 <?php echo !$category_slug ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
+                   class="px-4 py-2 rounded-full text-sm font-medium transition duration-300 <?php echo !$category_slug ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
                     Tümü
                 </a>
                 <?php foreach ($categories as $category): ?>
                     <a href="<?php echo BASE_URL; ?>/urunler.php?kategori=<?php echo $category['slug']; ?><?php echo $search ? '&arama=' . urlencode($search) : ''; ?>" 
-                       class="px-4 py-2 rounded-full text-sm font-medium transition duration-300 <?php echo $category_slug === $category['slug'] ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
+                       class="px-4 py-2 rounded-full text-sm font-medium transition duration-300 <?php echo $category_slug === $category['slug'] ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
                         <?php echo htmlspecialchars($category['name']); ?>
                     </a>
                 <?php endforeach; ?>
@@ -135,9 +145,9 @@ include 'includes/header.php';
                 <div class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
                     <i class="fas fa-search text-3xl text-gray-400"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">Ürün bulunamadı</h3>
+                <h3 class="text-xl font-semibold text-black mb-2">Ürün bulunamadı</h3>
                 <p class="text-gray-600 mb-6">Arama kriterlerinize uygun ürün bulunamadı. Farklı bir arama deneyin.</p>
-                <a href="<?php echo BASE_URL; ?>/urunler.php" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300">
+                <a href="<?php echo BASE_URL; ?>/urunler.php" class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition duration-300">
                     Tüm Ürünleri Görüntüle
                 </a>
             </div>
@@ -157,7 +167,7 @@ include 'includes/header.php';
                             
                             <!-- Category Badge -->
                             <div class="absolute top-4 left-4">
-                                <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                <span class="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
                                     <?php echo htmlspecialchars($product['category_name']); ?>
                                 </span>
                             </div>
@@ -165,7 +175,7 @@ include 'includes/header.php';
                             <!-- Quick View Button -->
                             <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition duration-300 flex items-center justify-center opacity-0 hover:opacity-100">
                                 <a href="<?php echo BASE_URL; ?>/urun/<?php echo $product['slug']; ?>" 
-                                   class="bg-white text-gray-900 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
+                                   class="bg-white text-black px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
                                     <i class="fas fa-eye mr-2"></i>Detayları Gör
                                 </a>
                             </div>
@@ -173,8 +183,8 @@ include 'includes/header.php';
                         
                         <!-- Product Info -->
                         <div class="p-6">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-                                <a href="<?php echo BASE_URL; ?>/urun/<?php echo $product['slug']; ?>" class="hover:text-blue-600 transition duration-300">
+                            <h3 class="text-lg font-semibold text-black mb-2 line-clamp-2">
+                                <a href="<?php echo BASE_URL; ?>/urun/<?php echo $product['slug']; ?>" class="hover:text-red-600 transition duration-300">
                                     <?php echo htmlspecialchars($product['name']); ?>
                                 </a>
                             </h3>
@@ -182,6 +192,28 @@ include 'includes/header.php';
                             <p class="text-gray-600 text-sm mb-4 line-clamp-3">
                                 <?php echo htmlspecialchars($product['short_description']); ?>
                             </p>
+                            
+                            <!-- Product Variants Colors -->
+                            <?php if (!empty($productVariants[$product['id']])): ?>
+                                <div class="mb-4">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-xs text-gray-600">Renkler:</span>
+                                        <div class="flex space-x-1">
+                                            <?php foreach ($productVariants[$product['id']] as $variant): ?>
+                                                <div class="w-4 h-4 rounded-full border border-gray-300" 
+                                                     style="background-color: <?php echo $variant['color_code']; ?>;" 
+                                                     title="<?php echo htmlspecialchars($variant['color']); ?>"></div>
+                                            <?php endforeach; ?>
+                                            <?php 
+                                            $totalVariants = fetchOne("SELECT COUNT(*) as count FROM product_variants WHERE product_id = ? AND is_active = 1", [$product['id']]);
+                                            if ($totalVariants['count'] > 5): 
+                                            ?>
+                                                <span class="text-xs text-gray-500">+<?php echo $totalVariants['count'] - 5; ?></span>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                             
                             <!-- Product Features -->
                             <?php if ($product['features']): ?>
@@ -202,7 +234,7 @@ include 'includes/header.php';
                                         endforeach; 
                                         ?>
                                         <?php if (count($features) > 2): ?>
-                                            <span class="inline-block bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded">
+                                            <span class="inline-block bg-red-100 text-red-700 text-xs px-2 py-1 rounded">
                                                 +<?php echo count($features) - 2; ?> özellik
                                             </span>
                                         <?php endif; ?>
@@ -213,7 +245,7 @@ include 'includes/header.php';
                             <!-- Action Buttons -->
                             <div class="flex items-center justify-between">
                                 <a href="<?php echo BASE_URL; ?>/urun/<?php echo $product['slug']; ?>" 
-                                   class="flex items-center text-blue-600 font-semibold hover:text-blue-700 transition duration-300">
+                                   class="flex items-center text-red-600 font-semibold hover:text-red-700 transition duration-300">
                                     Detayları Gör
                                     <i class="fas fa-arrow-right ml-2"></i>
                                 </a>
@@ -222,7 +254,7 @@ include 'includes/header.php';
                                     <button class="text-gray-400 hover:text-red-500 transition duration-300" title="Favorilere Ekle">
                                         <i class="fas fa-heart"></i>
                                     </button>
-                                    <button class="text-gray-400 hover:text-blue-500 transition duration-300" title="Paylaş">
+                                    <button class="text-gray-400 hover:text-red-500 transition duration-300" title="Paylaş">
                                         <i class="fas fa-share-alt"></i>
                                     </button>
                                 </div>
@@ -236,7 +268,7 @@ include 'includes/header.php';
 </section>
 
 <!-- CTA Section -->
-<section class="py-16 bg-blue-600">
+<section class="py-16 bg-red-600">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
         <h2 class="text-3xl font-bold mb-4">Aradığınızı Bulamadınız mı?</h2>
         <p class="text-xl mb-8 opacity-90">
@@ -244,11 +276,11 @@ include 'includes/header.php';
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="<?php echo BASE_URL; ?>/iletisim.php" 
-               class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
+               class="bg-white text-red-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
                 <i class="fas fa-envelope mr-2"></i>İletişime Geçin
             </a>
             <a href="tel:<?php echo getSetting('company_phone'); ?>" 
-               class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition duration-300">
+               class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-red-600 transition duration-300">
                 <i class="fas fa-phone mr-2"></i>Hemen Arayın
             </a>
         </div>

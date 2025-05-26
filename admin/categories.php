@@ -138,8 +138,8 @@ include 'includes/header.php';
     <div class="bg-white rounded-lg shadow-md card">
         <div class="p-6 border-b border-gray-200">
             <div class="flex items-center justify-between">
-                <h2 class="text-xl font-semibold text-gray-900">Kategoriler</h2>
-                <a href="?action=add" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                <h2 class="text-xl font-semibold text-black">Kategoriler</h2>
+                <a href="?action=add" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300">
                     <i class="fas fa-plus mr-2"></i>Yeni Kategori
                 </a>
             </div>
@@ -175,7 +175,7 @@ include 'includes/header.php';
                                             </div>
                                         <?php endif; ?>
                                         <div>
-                                            <div class="text-sm font-semibold text-gray-900"><?php echo htmlspecialchars($cat['name']); ?></div>
+                                            <div class="text-sm font-semibold text-black"><?php echo htmlspecialchars($cat['name']); ?></div>
                                             <div class="text-sm text-gray-500"><?php echo htmlspecialchars($cat['slug']); ?></div>
                                         </div>
                                     </div>
@@ -186,7 +186,7 @@ include 'includes/header.php';
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                         <?php echo $cat['product_count']; ?> ürün
                                     </span>
                                 </td>
@@ -206,7 +206,7 @@ include 'includes/header.php';
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="flex space-x-2">
-                                        <a href="?action=edit&id=<?php echo $cat['id']; ?>" class="text-blue-600 hover:text-blue-700" title="Düzenle">
+                                        <a href="?action=edit&id=<?php echo $cat['id']; ?>" class="text-red-600 hover:text-red-700" title="Düzenle">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <?php if ($cat['product_count'] == 0): ?>
@@ -230,7 +230,7 @@ include 'includes/header.php';
     <!-- Add/Edit Category Form -->
     <div class="bg-white rounded-lg shadow-md p-6 card">
         <div class="mb-6">
-            <h2 class="text-xl font-semibold text-gray-900">
+            <h2 class="text-xl font-semibold text-black">
                 <?php echo $action === 'add' ? 'Yeni Kategori Ekle' : 'Kategori Düzenle'; ?>
             </h2>
         </div>
@@ -243,7 +243,7 @@ include 'includes/header.php';
                     <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Kategori Adı *</label>
                     <input type="text" name="name" id="name" required
                            value="<?php echo $category ? htmlspecialchars($category['name']) : ''; ?>"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                            placeholder="Kategori adını girin">
                 </div>
                 
@@ -251,7 +251,7 @@ include 'includes/header.php';
                     <label for="sort_order" class="block text-sm font-medium text-gray-700 mb-2">Sıra Numarası</label>
                     <input type="number" name="sort_order" id="sort_order"
                            value="<?php echo $category ? $category['sort_order'] : '0'; ?>"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                            placeholder="0">
                 </div>
             </div>
@@ -259,7 +259,7 @@ include 'includes/header.php';
             <div>
                 <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Açıklama</label>
                 <textarea name="description" id="description" rows="4"
-                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                           placeholder="Kategori açıklamasını girin"><?php echo $category ? htmlspecialchars($category['description']) : ''; ?></textarea>
             </div>
             
@@ -267,7 +267,7 @@ include 'includes/header.php';
                 <label for="image" class="block text-sm font-medium text-gray-700 mb-2">Kategori Görseli</label>
                 <input type="file" name="image" id="image" accept="image/*"
                        onchange="previewImage(this, 'imagePreview')"
-                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
                 <p class="text-sm text-gray-500 mt-1">Desteklenen formatlar: JPG, PNG, GIF. Maksimum boyut: 5MB</p>
                 
                 <?php if ($category && $category['image']): ?>
@@ -283,12 +283,12 @@ include 'includes/header.php';
             <div class="flex items-center">
                 <input type="checkbox" name="is_active" id="is_active" value="1"
                        <?php echo (!$category || $category['is_active']) ? 'checked' : ''; ?>
-                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                       class="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded">
                 <label for="is_active" class="ml-2 block text-sm text-gray-700">Aktif</label>
             </div>
             
             <div class="flex space-x-4">
-                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition duration-300">
                     <i class="fas fa-save mr-2"></i>
                     <?php echo $action === 'add' ? 'Kategori Ekle' : 'Değişiklikleri Kaydet'; ?>
                 </button>

@@ -19,6 +19,16 @@ $featuredProducts = fetchAll("
     LIMIT 6
 ");
 
+// Get product variants with color codes for featured products
+$featuredProductVariants = [];
+foreach ($featuredProducts as $product) {
+    $featuredProductVariants[$product['id']] = fetchAll("
+        SELECT id, name, color, color_code FROM product_variants 
+        WHERE product_id = ? AND is_active = 1 AND color_code IS NOT NULL 
+        ORDER BY sort_order, name LIMIT 4
+    ", [$product['id']]);
+}
+
 // Get testimonials
 $testimonials = fetchAll("SELECT * FROM testimonials WHERE is_active = 1 ORDER BY sort_order LIMIT 3");
 
@@ -49,7 +59,7 @@ include 'includes/header.php';
         // Hiçbiri yoksa varsayılan gradient gösterelim
         else: 
         ?>
-            <div class="w-full h-full bg-gradient-to-r from-blue-600 to-purple-700"></div>
+            <div class="w-full h-full bg-gradient-to-r from-red-600 to-black"></div>
         <?php endif; ?>
         <div class="absolute inset-0 bg-black bg-opacity-70"></div>
     </div>
@@ -66,10 +76,10 @@ include 'includes/header.php';
                 <?php echo $heroSection ? htmlspecialchars($heroSection['content']) : '1998 yılından bu yana mobilya sektöründe kullanılmak üzere dolgu macunu, pvc tapa ve keçe üretimi yapmaktayız.'; ?>
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="<?php echo BASE_URL; ?>/urunler.php" class="bg-white text-blue-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition duration-300 hover-scale">
+                <a href="<?php echo BASE_URL; ?>/urunler.php" class="bg-white text-red-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition duration-300 hover-scale">
                     <i class="fas fa-box mr-2"></i>Ürünlerimizi İnceleyin
                 </a>
-                <a href="<?php echo BASE_URL; ?>/iletisim.php" class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-blue-600 transition duration-300 hover-scale">
+                <a href="<?php echo BASE_URL; ?>/iletisim.php" class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-red-600 transition duration-300 hover-scale">
                     <i class="fas fa-phone mr-2"></i>İletişime Geçin
                 </a>
             </div>
@@ -87,19 +97,19 @@ include 'includes/header.php';
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div class="animate-on-scroll">
-                <div class="text-4xl font-bold text-blue-600 mb-2"><?php echo getSetting('company_founded', '1998'); ?></div>
+                <div class="text-4xl font-bold text-red-600 mb-2"><?php echo getSetting('company_founded', '1998'); ?></div>
                 <div class="text-gray-600">Kuruluş Yılı</div>
             </div>
             <div class="animate-on-scroll">
-                <div class="text-4xl font-bold text-blue-600 mb-2">25+</div>
+                <div class="text-4xl font-bold text-red-600 mb-2">25+</div>
                 <div class="text-gray-600">Yıllık Deneyim</div>
             </div>
             <div class="animate-on-scroll">
-                <div class="text-4xl font-bold text-blue-600 mb-2">1000+</div>
+                <div class="text-4xl font-bold text-red-600 mb-2">1000+</div>
                 <div class="text-gray-600">Mutlu Müşteri</div>
             </div>
             <div class="animate-on-scroll">
-                <div class="text-4xl font-bold text-blue-600 mb-2">50+</div>
+                <div class="text-4xl font-bold text-red-600 mb-2">50+</div>
                 <div class="text-gray-600">Ürün Çeşidi</div>
             </div>
         </div>
@@ -110,7 +120,7 @@ include 'includes/header.php';
 <section class="py-20 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16 animate-on-scroll">
-            <h2 class="text-4xl font-bold text-gray-900 mb-4">Ürün Kategorilerimiz</h2>
+            <h2 class="text-4xl font-bold text-black mb-4">Ürün Kategorilerimiz</h2>
             <p class="text-xl text-gray-600 max-w-3xl mx-auto">
                 Mobilya sektörünün ihtiyaçlarına yönelik kaliteli ürünler sunuyoruz
             </p>
@@ -119,7 +129,7 @@ include 'includes/header.php';
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <?php foreach ($categories as $category): ?>
                 <div class="bg-white rounded-2xl overflow-hidden card-shadow hover-scale animate-on-scroll">
-                    <div class="h-48 bg-gradient-to-br from-blue-500 to-purple-600 relative">
+                    <div class="h-48 bg-gradient-to-br from-red-500 to-purple-600 relative">
                         <?php if ($category['image']): ?>
                             <img src="<?php echo $category['image']; ?>" alt="<?php echo htmlspecialchars($category['name']); ?>" class="w-full h-full object-cover">
                         <?php endif; ?>
@@ -129,11 +139,11 @@ include 'includes/header.php';
                         </div>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-semibold text-gray-900 mb-3"><?php echo htmlspecialchars($category['name']); ?></h3>
+                        <h3 class="text-xl font-semibold text-black mb-3"><?php echo htmlspecialchars($category['name']); ?></h3>
                         <p class="text-gray-600 mb-4 text-sm leading-relaxed">
                             <?php echo htmlspecialchars($category['description']); ?>
                         </p>
-                        <a href="<?php echo BASE_URL; ?>/kategori/<?php echo $category['slug']; ?>" class="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700 transition duration-300">
+                        <a href="<?php echo BASE_URL; ?>/kategori/<?php echo $category['slug']; ?>" class="inline-flex items-center text-red-600 font-semibold hover:text-red-700 transition duration-300">
                             Ürünleri Görüntüle
                             <i class="fas fa-arrow-right ml-2"></i>
                         </a>
@@ -148,7 +158,7 @@ include 'includes/header.php';
 <section class="py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16 animate-on-scroll">
-            <h2 class="text-4xl font-bold text-gray-900 mb-4">Öne Çıkan Ürünler</h2>
+            <h2 class="text-4xl font-bold text-black mb-4">Öne Çıkan Ürünler</h2>
             <p class="text-xl text-gray-600 max-w-3xl mx-auto">
                 En çok tercih edilen kaliteli ürünlerimizi keşfedin
             </p>
@@ -163,18 +173,34 @@ include 'includes/header.php';
                         ?>
                         <img src="<?php echo $productImage; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="w-full h-full object-cover">
                         <div class="absolute top-4 left-4">
-                            <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            <span class="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
                                 <?php echo htmlspecialchars($product['category_name']); ?>
                             </span>
                         </div>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-semibold text-gray-900 mb-3"><?php echo htmlspecialchars($product['name']); ?></h3>
+                        <h3 class="text-xl font-semibold text-black mb-3"><?php echo htmlspecialchars($product['name']); ?></h3>
                         <p class="text-gray-600 mb-4 text-sm leading-relaxed">
-                            <?php echo htmlspecialchars(substr($product['short_description'], 0, 120)) . '...'; ?>
+                        <?php echo htmlspecialchars(substr($product['short_description'], 0, 120)) . '...'; ?>
                         </p>
+                            
+                            <!-- Product Variants Colors -->
+                            <?php if (!empty($featuredProductVariants[$product['id']])): ?>
+                                <div class="mb-4">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-xs text-gray-600">Renkler:</span>
+                                        <div class="flex space-x-1">
+                                            <?php foreach ($featuredProductVariants[$product['id']] as $variant): ?>
+                                                <div class="w-3 h-3 rounded-full border border-gray-300" 
+                                                     style="background-color: <?php echo $variant['color_code']; ?>;" 
+                                                     title="<?php echo htmlspecialchars($variant['color']); ?>"></div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                         <div class="flex justify-between items-center">
-                            <a href="<?php echo BASE_URL; ?>/urun/<?php echo $product['slug']; ?>" class="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700 transition duration-300">
+                            <a href="<?php echo BASE_URL; ?>/urun/<?php echo $product['slug']; ?>" class="inline-flex items-center text-red-600 font-semibold hover:text-red-700 transition duration-300">
                                 Detayları Görüntüle
                                 <i class="fas fa-arrow-right ml-2"></i>
                             </a>
@@ -182,7 +208,7 @@ include 'includes/header.php';
                                 <button class="text-gray-400 hover:text-red-500 transition duration-300">
                                     <i class="fas fa-heart"></i>
                                 </button>
-                                <button class="text-gray-400 hover:text-blue-500 transition duration-300">
+                                <button class="text-gray-400 hover:text-red-500 transition duration-300">
                                     <i class="fas fa-share-alt"></i>
                                 </button>
                             </div>
@@ -193,7 +219,7 @@ include 'includes/header.php';
         </div>
         
         <div class="text-center mt-12">
-            <a href="<?php echo BASE_URL; ?>/urunler.php" class="bg-blue-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-blue-700 transition duration-300 hover-scale">
+            <a href="<?php echo BASE_URL; ?>/urunler.php" class="bg-red-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-red-700 transition duration-300 hover-scale">
                 <i class="fas fa-box mr-2"></i>Tüm Ürünleri Görüntüle
             </a>
         </div>
@@ -206,27 +232,27 @@ include 'includes/header.php';
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div class="animate-on-scroll">
-                <h2 class="text-4xl font-bold text-gray-900 mb-6"><?php echo htmlspecialchars($aboutSection['title']); ?></h2>
-                <h3 class="text-2xl text-blue-600 font-semibold mb-4"><?php echo htmlspecialchars($aboutSection['subtitle']); ?></h3>
+                <h2 class="text-4xl font-bold text-black mb-6"><?php echo htmlspecialchars($aboutSection['title']); ?></h2>
+                <h3 class="text-2xl text-red-600 font-semibold mb-4"><?php echo htmlspecialchars($aboutSection['subtitle']); ?></h3>
                 <p class="text-gray-600 mb-8 leading-relaxed text-lg">
                     <?php echo nl2br(htmlspecialchars($aboutSection['content'])); ?>
                 </p>
                 
                 <div class="grid grid-cols-2 gap-6 mb-8">
                     <div class="text-center p-4 bg-white rounded-lg card-shadow">
-                        <i class="fas fa-award text-3xl text-blue-600 mb-2"></i>
-                        <div class="font-semibold text-gray-900">Kalite Garantisi</div>
+                        <i class="fas fa-award text-3xl text-red-600 mb-2"></i>
+                        <div class="font-semibold text-black">Kalite Garantisi</div>
                         <div class="text-sm text-gray-600">ISO sertifikalı</div>
                     </div>
                     <div class="text-center p-4 bg-white rounded-lg card-shadow">
-                        <i class="fas fa-shipping-fast text-3xl text-blue-600 mb-2"></i>
-                        <div class="font-semibold text-gray-900">Hızlı Teslimat</div>
+                        <i class="fas fa-shipping-fast text-3xl text-red-600 mb-2"></i>
+                        <div class="font-semibold text-black">Hızlı Teslimat</div>
                         <div class="text-sm text-gray-600">Türkiye geneli</div>
                     </div>
                 </div>
                 
                 <?php if ($aboutSection['button_text']): ?>
-                    <a href="<?php echo $aboutSection['button_link']; ?>" class="bg-blue-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-blue-700 transition duration-300 hover-scale inline-block">
+                    <a href="<?php echo $aboutSection['button_link']; ?>" class="bg-red-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-red-700 transition duration-300 hover-scale inline-block">
                         <?php echo htmlspecialchars($aboutSection['button_text']); ?>
                     </a>
                 <?php endif; ?>
@@ -235,7 +261,7 @@ include 'includes/header.php';
             <div class="animate-on-scroll">
                 <div class="relative">
                     <img src="<?php echo $aboutSection['image'] ? $aboutSection['image'] : (getSetting('about_image') ? getSetting('about_image') : IMAGES_URL . '/about-us.jpg'); ?>" alt="Hakkımızda" class="rounded-2xl w-full h-96 object-cover card-shadow">
-                    <div class="absolute -bottom-6 -right-6 bg-blue-600 text-white p-6 rounded-2xl card-shadow">
+                    <div class="absolute -bottom-6 -right-6 bg-red-600 text-white p-6 rounded-2xl card-shadow">
                         <div class="text-center">
                             <div class="text-3xl font-bold">25+</div>
                             <div class="text-sm">Yıllık Deneyim</div>
@@ -252,7 +278,7 @@ include 'includes/header.php';
 <section class="py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16 animate-on-scroll">
-            <h2 class="text-4xl font-bold text-gray-900 mb-4">Neden ECEDEKOR?</h2>
+            <h2 class="text-4xl font-bold text-black mb-4">Neden ECEDEKOR?</h2>
             <p class="text-xl text-gray-600 max-w-3xl mx-auto">
                 Sektörde 25 yıllık deneyimimizle sizlere en iyi hizmeti sunuyoruz
             </p>
@@ -260,30 +286,30 @@ include 'includes/header.php';
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="text-center animate-on-scroll">
-                <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <i class="fas fa-medal text-3xl text-blue-600"></i>
+                <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-medal text-3xl text-red-600"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-4">Kaliteli Ürünler</h3>
+                <h3 class="text-xl font-semibold text-black mb-4">Kaliteli Ürünler</h3>
                 <p class="text-gray-600 leading-relaxed">
                     ISO standartlarında üretilen ürünlerimiz ile en yüksek kaliteyi garanti ediyoruz.
                 </p>
             </div>
             
             <div class="text-center animate-on-scroll">
-                <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <i class="fas fa-headset text-3xl text-blue-600"></i>
+                <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-headset text-3xl text-red-600"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-4">Müşteri Desteği</h3>
+                <h3 class="text-xl font-semibold text-black mb-4">Müşteri Desteği</h3>
                 <p class="text-gray-600 leading-relaxed">
                     7/24 müşteri desteği ile tüm sorularınıza hızlı ve etkili çözümler sunuyoruz.
                 </p>
             </div>
             
             <div class="text-center animate-on-scroll">
-                <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <i class="fas fa-truck text-3xl text-blue-600"></i>
+                <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-truck text-3xl text-red-600"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-4">Hızlı Teslimat</h3>
+                <h3 class="text-xl font-semibold text-black mb-4">Hızlı Teslimat</h3>
                 <p class="text-gray-600 leading-relaxed">
                     Türkiye genelinde hızlı ve güvenli teslimat ağımız ile siparişlerinizi ulaştırıyoruz.
                 </p>
@@ -297,7 +323,7 @@ include 'includes/header.php';
 <section class="py-20 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16 animate-on-scroll">
-            <h2 class="text-4xl font-bold text-gray-900 mb-4">Müşterilerimiz Ne Diyor?</h2>
+            <h2 class="text-4xl font-bold text-black mb-4">Müşterilerimiz Ne Diyor?</h2>
             <p class="text-xl text-gray-600 max-w-3xl mx-auto">
                 Memnun müşterilerimizin deneyimlerini okuyun
             </p>
@@ -320,12 +346,12 @@ include 'includes/header.php';
                         <?php if ($testimonial['image']): ?>
                             <img src="<?php echo $testimonial['image']; ?>" alt="<?php echo htmlspecialchars($testimonial['name']); ?>" class="w-12 h-12 rounded-full object-cover mr-4">
                         <?php else: ?>
-                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                                <i class="fas fa-user text-blue-600"></i>
+                            <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-user text-red-600"></i>
                             </div>
                         <?php endif; ?>
                         <div>
-                            <div class="font-semibold text-gray-900"><?php echo htmlspecialchars($testimonial['name']); ?></div>
+                            <div class="font-semibold text-black"><?php echo htmlspecialchars($testimonial['name']); ?></div>
                             <?php if ($testimonial['company']): ?>
                                 <div class="text-sm text-gray-600"><?php echo htmlspecialchars($testimonial['company']); ?></div>
                             <?php endif; ?>
@@ -339,8 +365,8 @@ include 'includes/header.php';
 <?php endif; ?>
 
 <!-- CTA Section -->
-<section class="py-20 bg-blue-600 relative overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-700"></div>
+<section class="py-20 bg-red-600 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-r from-red-600 to-black"></div>
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
         <div class="animate-on-scroll">
             <h2 class="text-4xl font-bold mb-6">Projeleriniz İçin Hemen İletişime Geçin</h2>
@@ -348,10 +374,10 @@ include 'includes/header.php';
                 Uzman ekibimiz ile ihtiyaçlarınıza özel çözümler geliştirelim
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="<?php echo BASE_URL; ?>/iletisim.php" class="bg-white text-blue-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition duration-300 hover-scale">
+                <a href="<?php echo BASE_URL; ?>/iletisim.php" class="bg-white text-red-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition duration-300 hover-scale">
                     <i class="fas fa-envelope mr-2"></i>İletişim Formu
                 </a>
-                <a href="tel:<?php echo getSetting('company_phone'); ?>" class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-blue-600 transition duration-300 hover-scale">
+                <a href="tel:<?php echo getSetting('company_phone'); ?>" class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-red-600 transition duration-300 hover-scale">
                     <i class="fas fa-phone mr-2"></i><?php echo getSetting('company_phone'); ?>
                 </a>
             </div>

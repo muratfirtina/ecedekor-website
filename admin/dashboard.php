@@ -38,17 +38,17 @@ include 'includes/header.php';
         <div class="bg-white rounded-lg shadow-md p-6 card">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-box text-2xl text-blue-600"></i>
+                    <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-box text-2xl text-red-600"></i>
                     </div>
                 </div>
                 <div class="ml-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Toplam Ürün</h3>
-                    <p class="text-3xl font-bold text-blue-600"><?php echo $stats['total_products']; ?></p>
+                    <h3 class="text-lg font-semibold text-black">Toplam Ürün</h3>
+                    <p class="text-3xl font-bold text-red-600"><?php echo $stats['total_products']; ?></p>
                 </div>
             </div>
             <div class="mt-4">
-                <a href="<?php echo ADMIN_URL; ?>/products.php" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                <a href="<?php echo ADMIN_URL; ?>/products.php" class="text-sm text-red-600 hover:text-red-700 font-medium">
                     Ürünleri Yönet →
                 </a>
             </div>
@@ -63,7 +63,7 @@ include 'includes/header.php';
                     </div>
                 </div>
                 <div class="ml-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Kategoriler</h3>
+                    <h3 class="text-lg font-semibold text-black">Kategoriler</h3>
                     <p class="text-3xl font-bold text-green-600"><?php echo $stats['total_categories']; ?></p>
                 </div>
             </div>
@@ -83,7 +83,7 @@ include 'includes/header.php';
                     </div>
                 </div>
                 <div class="ml-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Varyantlar</h3>
+                    <h3 class="text-lg font-semibold text-black">Varyantlar</h3>
                     <p class="text-3xl font-bold text-purple-600"><?php echo $stats['total_variants']; ?></p>
                 </div>
             </div>
@@ -103,7 +103,7 @@ include 'includes/header.php';
                     </div>
                 </div>
                 <div class="ml-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Yorumlar</h3>
+                    <h3 class="text-lg font-semibold text-black">Yorumlar</h3>
                     <p class="text-3xl font-bold text-orange-600"><?php echo $stats['total_testimonials']; ?></p>
                 </div>
             </div>
@@ -117,10 +117,10 @@ include 'includes/header.php';
     
     <!-- Quick Actions -->
     <div class="bg-white rounded-lg shadow-md p-6 card">
-        <h2 class="text-xl font-semibold text-gray-900 mb-4">Hızlı İşlemler</h2>
+        <h2 class="text-xl font-semibold text-black mb-4">Hızlı İşlemler</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <a href="<?php echo ADMIN_URL; ?>/products.php?action=add" class="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition duration-300">
-                <i class="fas fa-plus-circle text-3xl text-blue-600 mb-2"></i>
+                <i class="fas fa-plus-circle text-3xl text-red-600 mb-2"></i>
                 <span class="text-sm font-medium text-gray-700">Yeni Ürün</span>
             </a>
             
@@ -146,8 +146,8 @@ include 'includes/header.php';
         <div class="bg-white rounded-lg shadow-md card">
             <div class="p-6 border-b border-gray-200">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-xl font-semibold text-gray-900">Son Eklenen Ürünler</h2>
-                    <a href="<?php echo ADMIN_URL; ?>/products.php" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                    <h2 class="text-xl font-semibold text-black">Son Eklenen Ürünler</h2>
+                    <a href="<?php echo ADMIN_URL; ?>/products.php" class="text-red-600 hover:text-red-700 text-sm font-medium">
                         Tümünü Gör →
                     </a>
                 </div>
@@ -169,12 +169,12 @@ include 'includes/header.php';
                                     <?php endif; ?>
                                 </div>
                                 <div class="ml-4 flex-1">
-                                    <h3 class="text-sm font-semibold text-gray-900"><?php echo htmlspecialchars($product['name']); ?></h3>
+                                    <h3 class="text-sm font-semibold text-black"><?php echo htmlspecialchars($product['name']); ?></h3>
                                     <p class="text-xs text-gray-500"><?php echo htmlspecialchars($product['category_name']); ?></p>
                                     <p class="text-xs text-gray-400"><?php echo date('d.m.Y', strtotime($product['created_at'])); ?></p>
                                 </div>
                                 <div class="flex space-x-2">
-                                    <a href="<?php echo ADMIN_URL; ?>/products.php?action=edit&id=<?php echo $product['id']; ?>" class="text-blue-600 hover:text-blue-700">
+                                    <a href="<?php echo ADMIN_URL; ?>/products.php?action=edit&id=<?php echo $product['id']; ?>" class="text-red-600 hover:text-red-700">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <span class="text-<?php echo $product['is_active'] ? 'green' : 'red'; ?>-600">
@@ -192,8 +192,8 @@ include 'includes/header.php';
         <div class="bg-white rounded-lg shadow-md card">
             <div class="p-6 border-b border-gray-200">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-xl font-semibold text-gray-900">Son Müşteri Yorumları</h2>
-                    <a href="<?php echo ADMIN_URL; ?>/testimonials.php" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                    <h2 class="text-xl font-semibold text-black">Son Müşteri Yorumları</h2>
+                    <a href="<?php echo ADMIN_URL; ?>/testimonials.php" class="text-red-600 hover:text-red-700 text-sm font-medium">
                         Tümünü Gör →
                     </a>
                 </div>
@@ -217,7 +217,7 @@ include 'includes/header.php';
                                     </div>
                                     <div class="ml-3 flex-1">
                                         <div class="flex items-center">
-                                            <h3 class="text-sm font-semibold text-gray-900"><?php echo htmlspecialchars($testimonial['name']); ?></h3>
+                                            <h3 class="text-sm font-semibold text-black"><?php echo htmlspecialchars($testimonial['name']); ?></h3>
                                             <div class="ml-2 flex text-yellow-400">
                                                 <?php for ($i = 1; $i <= $testimonial['rating']; $i++): ?>
                                                     <i class="fas fa-star text-xs"></i>
@@ -231,7 +231,7 @@ include 'includes/header.php';
                                         <p class="text-xs text-gray-400 mt-1"><?php echo date('d.m.Y', strtotime($testimonial['created_at'])); ?></p>
                                     </div>
                                     <div class="flex space-x-2">
-                                        <a href="<?php echo ADMIN_URL; ?>/testimonials.php?action=edit&id=<?php echo $testimonial['id']; ?>" class="text-blue-600 hover:text-blue-700">
+                                        <a href="<?php echo ADMIN_URL; ?>/testimonials.php?action=edit&id=<?php echo $testimonial['id']; ?>" class="text-red-600 hover:text-red-700">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <span class="text-<?php echo $testimonial['is_active'] ? 'green' : 'red'; ?>-600">
@@ -249,10 +249,10 @@ include 'includes/header.php';
     
     <!-- System Info -->
     <div class="bg-white rounded-lg shadow-md p-6 card">
-        <h2 class="text-xl font-semibold text-gray-900 mb-4">Sistem Bilgileri</h2>
+        <h2 class="text-xl font-semibold text-black mb-4">Sistem Bilgileri</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="text-center">
-                <div class="text-2xl font-bold text-blue-600"><?php echo PHP_VERSION; ?></div>
+                <div class="text-2xl font-bold text-red-600"><?php echo PHP_VERSION; ?></div>
                 <div class="text-sm text-gray-600">PHP Sürümü</div>
             </div>
             <div class="text-center">

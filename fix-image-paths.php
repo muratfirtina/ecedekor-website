@@ -23,7 +23,7 @@ foreach($settings as $setting) {
             echo "<p style='color:red'>❌ $setting_key güncelleme hatası!</p>";
         }
     } else {
-        echo "<p style='color:blue'>ℹ️ $setting_key: Düzeltme gerekmedi ($current_value)</p>";
+        echo "<p style='color:red'>ℹ️ $setting_key: Düzeltme gerekmedi ($current_value)</p>";
     }
 }
 
@@ -46,7 +46,7 @@ foreach($sections as $section) {
             echo "<p style='color:red'>❌ Section ID $section_id güncelleme hatası!</p>";
         }
     } else {
-        echo "<p style='color:blue'>ℹ️ Section ID $section_id: Düzeltme gerekmedi ($current_image)</p>";
+        echo "<p style='color:red'>ℹ️ Section ID $section_id: Düzeltme gerekmedi ($current_image)</p>";
     }
 }
 
@@ -69,7 +69,7 @@ foreach($categories as $category) {
             echo "<p style='color:red'>❌ Category ID $category_id güncelleme hatası!</p>";
         }
     } else {
-        echo "<p style='color:blue'>ℹ️ Category ID $category_id: Düzeltme gerekmedi ($current_image)</p>";
+        echo "<p style='color:red'>ℹ️ Category ID $category_id: Düzeltme gerekmedi ($current_image)</p>";
     }
 }
 
@@ -92,7 +92,7 @@ foreach($products as $product) {
             echo "<p style='color:red'>❌ Product ID $product_id güncelleme hatası!</p>";
         }
     } else {
-        echo "<p style='color:blue'>ℹ️ Product ID $product_id: Düzeltme gerekmedi ($current_image)</p>";
+        echo "<p style='color:red'>ℹ️ Product ID $product_id: Düzeltme gerekmedi ($current_image)</p>";
     }
 }
 
@@ -115,7 +115,7 @@ foreach($variants as $variant) {
             echo "<p style='color:red'>❌ Variant ID $variant_id güncelleme hatası!</p>";
         }
     } else {
-        echo "<p style='color:blue'>ℹ️ Variant ID $variant_id: Düzeltme gerekmedi ($current_image)</p>";
+        echo "<p style='color:red'>ℹ️ Variant ID $variant_id: Düzeltme gerekmedi ($current_image)</p>";
     }
 }
 
@@ -138,7 +138,7 @@ foreach($images as $image) {
             echo "<p style='color:red'>❌ Image ID $image_id güncelleme hatası!</p>";
         }
     } else {
-        echo "<p style='color:blue'>ℹ️ Image ID $image_id: Düzeltme gerekmedi ($current_path)</p>";
+        echo "<p style='color:red'>ℹ️ Image ID $image_id: Düzeltme gerekmedi ($current_path)</p>";
     }
 }
 
@@ -161,7 +161,7 @@ foreach($testimonials as $testimonial) {
             echo "<p style='color:red'>❌ Testimonial ID $testimonial_id güncelleme hatası!</p>";
         }
     } else {
-        echo "<p style='color:blue'>ℹ️ Testimonial ID $testimonial_id: Düzeltme gerekmedi ($current_image)</p>";
+        echo "<p style='color:red'>ℹ️ Testimonial ID $testimonial_id: Düzeltme gerekmedi ($current_image)</p>";
     }
 }
 

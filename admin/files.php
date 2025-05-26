@@ -135,12 +135,12 @@ include 'includes/header.php';
             $pathParts = explode('/', trim($currentDir, '/'));
             $breadcrumbPath = '';
             ?>
-            <a href="?dir=uploads" class="text-blue-600 hover:text-blue-700">uploads</a>
+            <a href="?dir=uploads" class="text-red-600 hover:text-red-700">uploads</a>
             <?php foreach ($pathParts as $part): ?>
                 <?php if (!empty($part)): ?>
                     <?php $breadcrumbPath .= '/' . $part; ?>
                     <span class="text-gray-400">/</span>
-                    <a href="?dir=uploads<?php echo $breadcrumbPath; ?>" class="text-blue-600 hover:text-blue-700">
+                    <a href="?dir=uploads<?php echo $breadcrumbPath; ?>" class="text-red-600 hover:text-red-700">
                         <?php echo htmlspecialchars($part); ?>
                     </a>
                 <?php endif; ?>
@@ -149,7 +149,7 @@ include 'includes/header.php';
         
         <!-- Actions -->
         <div class="flex space-x-2">
-            <button onclick="showUploadModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+            <button onclick="showUploadModal()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300">
                 <i class="fas fa-upload mr-2"></i>Dosya Yükle
             </button>
             <button onclick="showNewFolderModal()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-300">
@@ -162,7 +162,7 @@ include 'includes/header.php';
 <!-- File Browser -->
 <div class="bg-white rounded-lg shadow-md card">
     <div class="p-6 border-b border-gray-200">
-        <h2 class="text-xl font-semibold text-gray-900">Dosyalar ve Klasörler</h2>
+        <h2 class="text-xl font-semibold text-black">Dosyalar ve Klasörler</h2>
     </div>
     
     <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 p-6">
@@ -180,8 +180,8 @@ include 'includes/header.php';
         
         <!-- Directories -->
         <?php foreach ($directories as $dir): ?>
-            <a href="?dir=<?php echo htmlspecialchars($dir['path']); ?>" class="group p-4 border border-gray-200 rounded-lg hover:bg-blue-50 transition duration-300 text-center">
-                <i class="fas fa-folder text-3xl text-blue-500 group-hover:text-blue-600 mb-2"></i>
+            <a href="?dir=<?php echo htmlspecialchars($dir['path']); ?>" class="group p-4 border border-gray-200 rounded-lg hover:bg-red-50 transition duration-300 text-center">
+                <i class="fas fa-folder text-3xl text-red-500 group-hover:text-red-600 mb-2"></i>
                 <div class="text-sm text-gray-700 truncate" title="<?php echo htmlspecialchars($dir['name']); ?>">
                     <?php echo htmlspecialchars($dir['name']); ?>
                 </div>
@@ -218,7 +218,7 @@ include 'includes/header.php';
                 <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition duration-300">
                     <div class="flex space-x-1">
                         <button onclick="copyToClipboard('<?php echo BASE_URL . $file['url']; ?>')" 
-                                class="w-6 h-6 bg-blue-600 text-white rounded text-xs hover:bg-blue-700" 
+                                class="w-6 h-6 bg-red-600 text-white rounded text-xs hover:bg-red-700" 
                                 title="Link Kopyala">
                             <i class="fas fa-link"></i>
                         </button>
@@ -249,7 +249,7 @@ include 'includes/header.php';
     <div class="bg-white rounded-2xl max-w-md w-full">
         <div class="p-6">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-semibold text-gray-900">Dosya Yükle</h3>
+                <h3 class="text-xl font-semibold text-black">Dosya Yükle</h3>
                 <button onclick="closeUploadModal()" class="text-gray-400 hover:text-gray-600">
                     <i class="fas fa-times text-xl"></i>
                 </button>
@@ -261,12 +261,12 @@ include 'includes/header.php';
                 <div class="mb-6">
                     <label for="file" class="block text-sm font-medium text-gray-700 mb-2">Dosya Seçin</label>
                     <input type="file" name="file" id="file" required accept="image/*"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
                     <p class="text-sm text-gray-500 mt-1">Maksimum boyut: 5MB</p>
                 </div>
                 
                 <div class="flex space-x-4">
-                    <button type="submit" class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300">
+                    <button type="submit" class="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition duration-300">
                         <i class="fas fa-upload mr-2"></i>Yükle
                     </button>
                     <button type="button" onclick="closeUploadModal()" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition duration-300">
@@ -283,7 +283,7 @@ include 'includes/header.php';
     <div class="bg-white rounded-2xl max-w-md w-full">
         <div class="p-6">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-semibold text-gray-900">Yeni Klasör</h3>
+                <h3 class="text-xl font-semibold text-black">Yeni Klasör</h3>
                 <button onclick="closeNewFolderModal()" class="text-gray-400 hover:text-gray-600">
                     <i class="fas fa-times text-xl"></i>
                 </button>
@@ -295,7 +295,7 @@ include 'includes/header.php';
                 <div class="mb-6">
                     <label for="new_dir" class="block text-sm font-medium text-gray-700 mb-2">Klasör Adı</label>
                     <input type="text" name="new_dir" id="new_dir" required
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                            placeholder="Klasör adını girin">
                 </div>
                 
@@ -317,7 +317,7 @@ include 'includes/header.php';
     <div class="bg-white rounded-2xl max-w-4xl w-full max-h-full overflow-auto">
         <div class="p-6">
             <div class="flex items-center justify-between mb-6">
-                <h3 id="imageModalTitle" class="text-xl font-semibold text-gray-900"></h3>
+                <h3 id="imageModalTitle" class="text-xl font-semibold text-black"></h3>
                 <button onclick="closeImageModal()" class="text-gray-400 hover:text-gray-600">
                     <i class="fas fa-times text-xl"></i>
                 </button>

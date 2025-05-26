@@ -1,66 +1,99 @@
 <?php
 require_once 'includes/config.php';
 
-$categorySlug = $_GET['slug'] ?? '';
+// URL'den kategori slug'ını al
+// (Bir önceki yanıttaki daha sağlamlaştırılmış slug alma mantığını kullanıyoruz)
+$requestUriPath = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
+$basePathConfig = trim(parse_url(BASE_URL, PHP_URL_PATH), '/');
 
-if (!$categorySlug) {
+$relevantPath = $requestUriPath;
+// BASE_URL'in path kısmını request URI'dan çıkararak göreceli yolu elde et
+if (!empty($basePathConfig) && strpos($requestUriPath, $basePathConfig) === 0) {
+    $pathAfterBase = substr($requestUriPath, strlen($basePathConfig));
+    $relevantPath = trim($pathAfterBase, '/'); // örn: kategori/tp-ahap-tamir-macunlar
+}
+
+$categorySlug = '';
+// Desen: kategori/SLUG
+if (preg_match('/^kategori\/([a-zA-Z0-9-]+)\/?$/', $relevantPath, $matches)) {
+    $categorySlug = $matches[1];
+} elseif (isset($_GET['slug'])) { // Fallback: GET parametresi olarak slug (örn: kategori.php?slug=...)
+    $categorySlug = $_GET['slug'];
+}
+
+if (empty($categorySlug)) {
+    // error_log("Kategori slug'ı alınamadı. Request URI: {$_SERVER['REQUEST_URI']}, Relevant Path: {$relevantPath}");
     header('Location: ' . BASE_URL . '/urunler.php');
     exit;
 }
 
-// Get category
+// Kategori bilgilerini veritabanından çek
 $category = fetchOne("SELECT * FROM categories WHERE slug = ? AND is_active = 1", [$categorySlug]);
 
 if (!$category) {
+    // error_log("Kategori bulunamadı. Slug: {$categorySlug}");
     header('Location: ' . BASE_URL . '/404.php');
     exit;
 }
 
+// SAYFA BAŞLIĞI VE AÇIKLAMASI DOĞRU $category DEĞİŞKENİ İLE AYARLANIYOR
 $pageTitle = $category['name'];
 $pageDescription = $category['description'] ?: 'Kaliteli ' . $category['name'] . ' ürünlerini keşfedin.';
 
-// Get products in this category
+// Bu kategorideki ürünleri çek (DOĞRU $category['id'] KULLANILIYOR)
 $products = fetchAll("
-    SELECT p.*, 
-           (SELECT pv.image FROM product_variants pv WHERE pv.product_id = p.id AND pv.image IS NOT NULL LIMIT 1) as variant_image,
+    SELECT p.*,
+           (SELECT pv.image FROM product_variants pv WHERE pv.product_id = p.id AND pv.image IS NOT NULL AND pv.image != '' ORDER BY pv.sort_order LIMIT 1) as variant_image,
            (SELECT COUNT(*) FROM product_variants pv WHERE pv.product_id = p.id AND pv.is_active = 1) as variant_count
-    FROM products p 
-    WHERE p.category_id = ? AND p.is_active = 1 
+    FROM products p
+    WHERE p.category_id = ? AND p.is_active = 1
     ORDER BY p.sort_order, p.name
 ", [$category['id']]);
 
-// Get other categories
+$productVariants = [];
+foreach ($products as $product) {
+    $productVariants[$product['id']] = fetchAll("
+        SELECT id, name, color, color_code, size, weight, sku, price FROM product_variants
+        WHERE product_id = ? AND is_active = 1
+        ORDER BY sort_order, name
+    ", [$product['id']]);
+}
+
 $otherCategories = fetchAll("SELECT * FROM categories WHERE id != ? AND is_active = 1 ORDER BY sort_order", [$category['id']]);
 
-include 'includes/header.php';
+// ---- ÖNEMLİ DÜZELTME ----
+// Mevcut kategori bilgilerini, includes/header.php tarafından olası bir üzerine yazılma ihtimaline karşı
+// farklı bir değişkende saklayalım. Sayfanın gövdesinde bu değişkeni kullanacağız.
+$displayCategory = $category;
+// ---- ÖNEMLİ DÜZELTME SONU ----
+
+include 'includes/header.php'; // Bu dosya global $category değişkenini değiştirebilir
 ?>
 
 <!-- Category Header -->
-<section class="relative py-24 bg-gradient-to-r from-blue-600 to-purple-700 overflow-hidden">
+<section class="relative py-24 bg-gradient-to-r from-red-600 to-black overflow-hidden">
     <div class="absolute inset-0 bg-black opacity-20"></div>
-    <?php if ($category['image']): ?>
-        <div class="absolute inset-0 parallax" style="background-image: url('<?php echo $category['image']; ?>');"></div>
-        <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-700 opacity-80"></div>
+    <?php if (!empty($displayCategory['image'])): // $displayCategory kullanılıyor ?>
+        <div class="absolute inset-0 parallax" style="background-image: url('<?php echo htmlspecialchars($displayCategory['image']); ?>');"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-red-600 to-black opacity-80"></div>
     <?php endif; ?>
-    
+
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
         <div class="animate-on-scroll">
-            <!-- Category Icon -->
             <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i class="fas fa-tools text-3xl"></i>
+                <i class="fas fa-<?php echo htmlspecialchars($displayCategory['icon'] ?? 'tools'); ?> text-3xl"></i>
             </div>
-            
+
             <h1 class="text-4xl md:text-6xl font-bold mb-6 text-shadow">
-                <?php echo htmlspecialchars($category['name']); ?>
+                <?php echo htmlspecialchars($displayCategory['name']); // $displayCategory kullanılıyor ?>
             </h1>
-            
-            <?php if ($category['description']): ?>
+
+            <?php if (!empty($displayCategory['description'])): // $displayCategory kullanılıyor ?>
                 <p class="text-xl md:text-2xl mb-8 max-w-4xl mx-auto text-shadow opacity-90">
-                    <?php echo htmlspecialchars($category['description']); ?>
+                    <?php echo htmlspecialchars($displayCategory['description']); ?>
                 </p>
             <?php endif; ?>
-            
-            <!-- Stats -->
+
             <div class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-8 mb-8">
                 <div class="flex items-center">
                     <i class="fas fa-box mr-2"></i>
@@ -69,7 +102,13 @@ include 'includes/header.php';
                 <div class="flex items-center">
                     <i class="fas fa-palette mr-2"></i>
                     <span class="font-semibold">
-                        <?php echo array_sum(array_column($products, 'variant_count')); ?> Varyant
+                        <?php
+                        $totalVariants = 0;
+                        foreach ($products as $p) {
+                            $totalVariants += $p['variant_count'];
+                        }
+                        echo $totalVariants;
+                        ?> Varyant
                     </span>
                 </div>
                 <div class="flex items-center">
@@ -77,15 +116,14 @@ include 'includes/header.php';
                     <span class="font-semibold">Kalite Garantili</span>
                 </div>
             </div>
-            
-            <!-- Breadcrumb -->
+
             <nav class="mt-8">
                 <ol class="flex items-center justify-center space-x-2 text-sm opacity-90">
                     <li><a href="<?php echo BASE_URL; ?>" class="hover:text-gray-200">Ana Sayfa</a></li>
-                    <li><i class="fas fa-chevron-right mx-2"></i></li>
+                    <li><i class="fas fa-chevron-right mx-2 text-xs"></i></li>
                     <li><a href="<?php echo BASE_URL; ?>/urunler.php" class="hover:text-gray-200">Ürünler</a></li>
-                    <li><i class="fas fa-chevron-right mx-2"></i></li>
-                    <li class="text-gray-200"><?php echo htmlspecialchars($category['name']); ?></li>
+                    <li><i class="fas fa-chevron-right mx-2 text-xs"></i></li>
+                    <li class="text-gray-200"><?php echo htmlspecialchars($displayCategory['name']); // $displayCategory kullanılıyor ?></li>
                 </ol>
             </nav>
         </div>
@@ -101,21 +139,21 @@ include 'includes/header.php';
                 <div class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
                     <i class="fas fa-box text-3xl text-gray-400"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">Bu kategoride henüz ürün bulunmuyor</h3>
+                <h3 class="text-xl font-semibold text-black mb-2">Bu kategoride henüz ürün bulunmuyor</h3>
                 <p class="text-gray-600 mb-6">Yakında yeni ürünler eklenecek. Diğer kategorileri incelemeyi unutmayın.</p>
                 <a href="<?php echo BASE_URL; ?>/urunler.php" 
-                   class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300">
+                   class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition duration-300">
                     Tüm Ürünleri Görüntüle
                 </a>
             </div>
         <?php else: ?>
             <!-- Category Products Header -->
             <div class="text-center mb-12 animate-on-scroll">
-                <h2 class="text-3xl font-bold text-gray-900 mb-4">
-                    <?php echo htmlspecialchars($category['name']); ?> Ürünleri
+                <h2 class="text-3xl font-bold text-black mb-4">
+                    <?php echo htmlspecialchars($displayCategory['name']); // $displayCategory kullanılıyor ?> Ürünleri
                 </h2>
                 <p class="text-gray-600 max-w-3xl mx-auto">
-                    <?php echo count($products); ?> adet kaliteli ürün bulundu
+                    Bu kategoride <?php echo count($products); ?> adet kaliteli ürün bulundu. İhtiyaçlarınıza en uygun olanı seçin.
                 </p>
             </div>
             
@@ -144,7 +182,7 @@ include 'includes/header.php';
                             <!-- Overlay on hover -->
                             <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
                                 <a href="<?php echo BASE_URL; ?>/urun/<?php echo $product['slug']; ?>" 
-                                   class="bg-white text-gray-900 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition duration-300 transform translate-y-4 group-hover:translate-y-0">
+                                   class="bg-white text-black px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition duration-300 transform translate-y-4 group-hover:translate-y-0">
                                     <i class="fas fa-eye mr-2"></i>İncele
                                 </a>
                             </div>
@@ -152,9 +190,9 @@ include 'includes/header.php';
                         
                         <!-- Product Info -->
                         <div class="p-6">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                            <h3 class="text-lg font-semibold text-black mb-2">
                                 <a href="<?php echo BASE_URL; ?>/urun/<?php echo $product['slug']; ?>" 
-                                   class="hover:text-blue-600 transition duration-300">
+                                   class="hover:text-red-600 transition duration-300">
                                     <?php echo htmlspecialchars($product['name']); ?>
                                 </a>
                             </h3>
@@ -163,39 +201,78 @@ include 'includes/header.php';
                                 <?php echo htmlspecialchars($product['short_description']); ?>
                             </p>
                             
-                            <!-- Features Preview -->
-                            <?php if ($product['features']): ?>
+                            <!-- Product Variants -->
+                            <?php if (!empty($productVariants[$product['id']])): ?>
                                 <div class="mb-4">
-                                    <?php 
-                                    $features = explode("\n", $product['features']);
-                                    $feature = trim($features[0]);
-                                    if ($feature):
+                                    <h4 class="text-sm font-semibold text-gray-700 mb-2">Mevcut Varyantlar:</h4>
+                                    <div class="space-y-2 max-h-32 overflow-y-auto">
+                                        <?php foreach ($productVariants[$product['id']] as $variant): ?>
+                                            <div class="flex items-center justify-between p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-200">
+                                                <div class="flex items-center space-x-2">
+                                                    <?php if ($variant['color_code']): ?>
+                                                        <div class="w-4 h-4 rounded-full border border-gray-300 shadow-sm" 
+                                                             style="background-color: <?php echo htmlspecialchars($variant['color_code']); ?>;"
+                                                             title="<?php echo htmlspecialchars($variant['color'] ?: $variant['name']); ?>"></div>
+                                                    <?php endif; ?>
+                                                    <span class="text-sm font-medium text-gray-700">
+                                                        <?php echo htmlspecialchars($variant['name']); ?>
+                                                    </span>
+                                                    <?php if ($variant['size']): ?>
+                                                        <span class="text-xs text-gray-500">(<?php echo htmlspecialchars($variant['size']); ?>)</span>
+                                                    <?php endif; ?>
+                                                    <?php if ($variant['weight']): ?>
+                                                        <span class="text-xs text-gray-500"><?php echo htmlspecialchars($variant['weight']); ?></span>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <div class="text-right">
+                                                    <!-- <?php if ($variant['price']): ?>
+                                                        <div class="text-sm font-semibold text-red-600">₺<?php echo number_format($variant['price'], 2); ?></div>
+                                                    <?php endif; ?> -->
+                                                    <?php if ($variant['sku']): ?>
+                                                        <div class="text-xs text-gray-400 font-mono"><?php echo htmlspecialchars($variant['sku']); ?></div>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                    <?php if (count($productVariants[$product['id']]) > 3): ?>
+                                        <div class="text-xs text-gray-500 mt-1 text-center">
+                                            Daha fazla varyant için ürün detayını inceleyin
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
+                            <?php if (!empty($product['features'])): ?>
+                                <div class="mb-4 text-sm text-gray-600 h-10 overflow-hidden">
+                                    <?php
+                                    $features = array_filter(array_map('trim', explode("\n", $product['features'])));
+                                    if (!empty($features)):
+                                        $feature = htmlspecialchars($features[0]);
                                     ?>
-                                        <div class="flex items-center text-sm text-gray-600">
-                                            <i class="fas fa-check text-green-500 mr-2"></i>
-                                            <?php echo htmlspecialchars($feature); ?>
+                                        <div class="flex items-center">
+                                            <i class="fas fa-check-circle text-green-500 mr-2 text-xs"></i>
+                                            <span class="line-clamp-1"><?php echo $feature; ?></span>
                                         </div>
                                         <?php if (count($features) > 1): ?>
-                                            <div class="text-xs text-gray-500 mt-1">
+                                            <div class="text-xs text-gray-500 mt-1 ml-5">
                                                 +<?php echo count($features) - 1; ?> özellik daha
                                             </div>
                                         <?php endif; ?>
                                     <?php endif; ?>
                                 </div>
+                            <?php else: ?>
+                                 <div class="mb-4 h-10"></div>
                             <?php endif; ?>
-                            
-                            <!-- Action -->
-                            <div class="flex items-center justify-between">
-                                <a href="<?php echo BASE_URL; ?>/urun/<?php echo $product['slug']; ?>" 
-                                   class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300 text-sm font-medium">
+                            <div class="flex items-center justify-between pt-2 border-t border-gray-100">
+                                <a href="<?php echo BASE_URL; ?>/urun/<?php echo htmlspecialchars($product['slug']); ?>"
+                                   class="bg-red-600 text-white px-5 py-2.5 rounded-lg hover:bg-red-700 transition duration-300 text-sm font-medium shadow hover:shadow-md">
                                     Detayları Gör
                                 </a>
-                                
                                 <div class="flex space-x-2">
-                                    <button class="text-gray-400 hover:text-red-500 transition duration-300" title="Favorilere Ekle">
+                                    <button class="text-gray-400 hover:text-red-500 transition duration-300 p-2 rounded-full hover:bg-red-50" title="Favorilere Ekle">
                                         <i class="fas fa-heart"></i>
                                     </button>
-                                    <button class="text-gray-400 hover:text-blue-500 transition duration-300" title="Paylaş">
+                                    <button class="text-gray-400 hover:text-red-500 transition duration-300 p-2 rounded-full hover:bg-red-50" title="Paylaş">
                                         <i class="fas fa-share-alt"></i>
                                     </button>
                                 </div>
@@ -213,39 +290,36 @@ include 'includes/header.php';
 <section class="py-16 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12 animate-on-scroll">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Diğer Kategoriler</h2>
+            <h2 class="text-3xl font-bold text-black mb-4">Diğer Kategoriler</h2>
             <p class="text-gray-600">Kaliteli ürün gamımızın diğer kategorilerini keşfedin</p>
         </div>
-        
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <?php foreach (array_slice($otherCategories, 0, 6) as $otherCategory): ?>
-                <a href="<?php echo BASE_URL; ?>/kategori/<?php echo $otherCategory['slug']; ?>" 
-                   class="group bg-gray-50 rounded-2xl p-6 hover:bg-blue-50 transition duration-300 card-shadow hover-scale animate-on-scroll">
+                <a href="<?php echo BASE_URL; ?>/kategori/<?php echo htmlspecialchars($otherCategory['slug']); ?>"
+                   class="group bg-gray-50 rounded-2xl p-6 hover:bg-red-50 transition-all duration-300 ease-in-out shadow-md hover:shadow-lg transform hover:-translate-y-1 animate-on-scroll">
                     <div class="flex items-center mb-4">
-                        <?php if ($otherCategory['image']): ?>
-                            <img src="<?php echo $otherCategory['image']; ?>" 
-                                 alt="<?php echo htmlspecialchars($otherCategory['name']); ?>" 
-                                 class="w-12 h-12 object-cover rounded-lg mr-4">
+                        <?php if (!empty($otherCategory['image'])): ?>
+                            <img src="<?php echo htmlspecialchars($otherCategory['image']); ?>"
+                                 alt="<?php echo htmlspecialchars($otherCategory['name']); ?>"
+                                 class="w-14 h-14 object-cover rounded-lg mr-4 shadow-sm">
                         <?php else: ?>
-                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-blue-200 transition duration-300">
-                                <i class="fas fa-tools text-blue-600"></i>
+                            <div class="w-14 h-14 bg-red-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-red-200 transition duration-300">
+                                <i class="fas fa-<?php echo htmlspecialchars($otherCategory['icon'] ?? 'tags'); ?> text-red-600 text-xl"></i>
                             </div>
                         <?php endif; ?>
-                        
                         <div class="flex-1">
-                            <h3 class="font-semibold text-gray-900 group-hover:text-blue-600 transition duration-300">
+                            <h3 class="font-semibold text-black group-hover:text-red-600 transition duration-300">
                                 <?php echo htmlspecialchars($otherCategory['name']); ?>
                             </h3>
                             <?php
-                            $categoryProductCount = fetchOne("SELECT COUNT(*) as count FROM products WHERE category_id = ? AND is_active = 1", [$otherCategory['id']]);
+                            $categoryProductCountResult = fetchOne("SELECT COUNT(*) as count FROM products WHERE category_id = ? AND is_active = 1", [$otherCategory['id']]);
+                            $categoryProductCount = $categoryProductCountResult ? $categoryProductCountResult['count'] : 0;
                             ?>
-                            <p class="text-sm text-gray-600"><?php echo $categoryProductCount['count']; ?> ürün</p>
+                            <p class="text-sm text-gray-600"><?php echo $categoryProductCount; ?> ürün</p>
                         </div>
-                        
-                        <i class="fas fa-arrow-right text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition duration-300"></i>
+                        <i class="fas fa-arrow-right text-gray-400 group-hover:text-red-600 group-hover:translate-x-1 transition-transform duration-300"></i>
                     </div>
-                    
-                    <?php if ($otherCategory['description']): ?>
+                    <?php if (!empty($otherCategory['description'])): ?>
                         <p class="text-sm text-gray-600 line-clamp-2">
                             <?php echo htmlspecialchars($otherCategory['description']); ?>
                         </p>
@@ -253,55 +327,79 @@ include 'includes/header.php';
                 </a>
             <?php endforeach; ?>
         </div>
-        
+        <?php if (count($otherCategories) > 6): ?>
         <div class="text-center mt-12">
-            <a href="<?php echo BASE_URL; ?>/urunler.php" 
-               class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition duration-300 font-semibold">
+            <a href="<?php echo BASE_URL; ?>/urunler.php"
+               class="bg-red-600 text-white px-8 py-3 rounded-lg hover:bg-red-700 transition duration-300 font-semibold shadow hover:shadow-md">
                 <i class="fas fa-th-large mr-2"></i>Tüm Kategorileri Görüntüle
             </a>
         </div>
+        <?php endif; ?>
     </div>
 </section>
 <?php endif; ?>
 
 <!-- CTA Section -->
-<section class="py-16 bg-gradient-to-r from-blue-600 to-purple-700">
+<section class="py-20 bg-gradient-to-r from-red-600 to-black">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
         <div class="animate-on-scroll">
-            <h2 class="text-3xl font-bold mb-4">
-                <?php echo htmlspecialchars($category['name']); ?> Hakkında Sorularınız mı Var?
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">
+                <?php echo htmlspecialchars($displayCategory['name']); // $displayCategory kullanılıyor ?> Hakkında Sorularınız mı Var?
             </h2>
-            <p class="text-xl mb-8 opacity-90">
-                Uzman ekibimiz size en uygun ürünü bulmak için burada
+            <p class="text-xl md:text-2xl mb-10 opacity-90 max-w-3xl mx-auto">
+                Ürünlerimiz veya hizmetlerimiz hakkında daha fazla bilgi almak, özel bir proje için teklif istemek ya da sadece merhaba demek için bize ulaşın. Uzman ekibimiz size yardımcı olmaktan mutluluk duyacaktır.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="<?php echo BASE_URL; ?>/iletisim.php" 
-                   class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
+                <a href="<?php echo BASE_URL; ?>/iletisim.php"
+                   class="bg-white text-red-700 px-8 py-3.5 rounded-lg font-semibold hover:bg-gray-100 transition duration-300 shadow-md text-lg">
                     <i class="fas fa-envelope mr-2"></i>İletişime Geçin
                 </a>
-                <a href="tel:<?php echo getSetting('company_phone'); ?>" 
-                   class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition duration-300">
-                    <i class="fas fa-phone mr-2"></i>Hemen Arayın
+                <?php $companyPhone = getSetting('company_phone'); ?>
+                <?php if (!empty($companyPhone)): ?>
+                <a href="tel:<?php echo htmlspecialchars(str_replace(' ', '', $companyPhone)); ?>"
+                   class="border-2 border-white text-white px-8 py-3.5 rounded-lg font-semibold hover:bg-white hover:text-red-700 transition duration-300 shadow-md text-lg">
+                    <i class="fas fa-phone-alt mr-2"></i>Hemen Arayın
                 </a>
+                <?php endif; ?>
             </div>
         </div>
     </div>
 </section>
 
 <style>
-.line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+/* Stiller önceki yanıttaki gibi kalabilir, bir değişiklik gerekmiyor */
+.line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+.line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.parallax { background-attachment: fixed; background-position: center; background-repeat: no-repeat; background-size: cover; }
+.text-shadow { text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
+.card-shadow { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+.product-card-hover:hover {
+    /* transform: scale(1.03); // Bu zaten hover-scale ile var gibi, gerekirse sadeleştirilebilir */
+    /* box-shadow: 0 10px 20px rgba(0,0,0,0.1), 0 6px 6px rgba(0,0,0,0.08); // Daha belirgin gölge için */
 }
-
-.line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
+.animate-on-scroll { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+.animate-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
 </style>
+
+<script>
+// JS önceki yanıttaki gibi kalabilir, bir değişiklik gerekmiyor
+document.addEventListener("DOMContentLoaded", function() {
+    const animatedElements = document.querySelectorAll('.animate-on-scroll');
+    if (typeof IntersectionObserver === 'function') {
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        animatedElements.forEach(el => observer.observe(el));
+    } else { // Fallback for older browsers
+        animatedElements.forEach(el => el.classList.add('is-visible'));
+    }
+});
+</script>
 
 <?php include 'includes/footer.php'; ?>

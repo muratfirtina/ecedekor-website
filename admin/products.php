@@ -144,8 +144,8 @@ include 'includes/header.php';
     <div class="bg-white rounded-lg shadow-md card">
         <div class="p-6 border-b border-gray-200">
             <div class="flex items-center justify-between">
-                <h2 class="text-xl font-semibold text-gray-900">Ürünler</h2>
-                <a href="?action=add" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                <h2 class="text-xl font-semibold text-black">Ürünler</h2>
+                <a href="?action=add" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300">
                     <i class="fas fa-plus mr-2"></i>Yeni Ürün
                 </a>
             </div>
@@ -181,7 +181,7 @@ include 'includes/header.php';
                                             </div>
                                         <?php endif; ?>
                                         <div>
-                                            <div class="text-sm font-semibold text-gray-900"><?php echo htmlspecialchars($prod['name']); ?></div>
+                                            <div class="text-sm font-semibold text-black"><?php echo htmlspecialchars($prod['name']); ?></div>
                                             <div class="text-sm text-gray-500"><?php echo htmlspecialchars($prod['slug']); ?></div>
                                         </div>
                                     </div>
@@ -197,7 +197,7 @@ include 'includes/header.php';
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                         <?php echo $prod['variant_count']; ?> varyant
                                     </span>
                                 </td>
@@ -217,7 +217,7 @@ include 'includes/header.php';
                                         <a href="<?php echo ADMIN_URL; ?>/variants.php?product_id=<?php echo $prod['id']; ?>" class="text-purple-600 hover:text-purple-700" title="Varyantlar">
                                             <i class="fas fa-palette"></i>
                                         </a>
-                                        <a href="?action=edit&id=<?php echo $prod['id']; ?>" class="text-blue-600 hover:text-blue-700" title="Düzenle">
+                                        <a href="?action=edit&id=<?php echo $prod['id']; ?>" class="text-red-600 hover:text-red-700" title="Düzenle">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <a href="?action=delete&id=<?php echo $prod['id']; ?>" 
@@ -239,7 +239,7 @@ include 'includes/header.php';
     <!-- Add/Edit Product Form -->
     <div class="bg-white rounded-lg shadow-md p-6 card">
         <div class="mb-6">
-            <h2 class="text-xl font-semibold text-gray-900">
+            <h2 class="text-xl font-semibold text-black">
                 <?php echo $action === 'add' ? 'Yeni Ürün Ekle' : 'Ürün Düzenle'; ?>
             </h2>
         </div>
@@ -251,7 +251,7 @@ include 'includes/header.php';
                 <div>
                     <label for="category_id" class="block text-sm font-medium text-gray-700 mb-2">Kategori *</label>
                     <select name="category_id" id="category_id" required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
                         <option value="">Kategori seçin</option>
                         <?php foreach ($categories as $cat): ?>
                             <option value="<?php echo $cat['id']; ?>" 
@@ -266,7 +266,7 @@ include 'includes/header.php';
                     <label for="sort_order" class="block text-sm font-medium text-gray-700 mb-2">Sıra Numarası</label>
                     <input type="number" name="sort_order" id="sort_order"
                            value="<?php echo $product ? $product['sort_order'] : '0'; ?>"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                            placeholder="0">
                 </div>
             </div>
@@ -275,28 +275,28 @@ include 'includes/header.php';
                 <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Ürün Adı *</label>
                 <input type="text" name="name" id="name" required
                        value="<?php echo $product ? htmlspecialchars($product['name']) : ''; ?>"
-                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                        placeholder="Ürün adını girin">
             </div>
             
             <div>
                 <label for="short_description" class="block text-sm font-medium text-gray-700 mb-2">Kısa Açıklama</label>
                 <textarea name="short_description" id="short_description" rows="3"
-                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                           placeholder="Ürünün kısa açıklamasını girin"><?php echo $product ? htmlspecialchars($product['short_description']) : ''; ?></textarea>
             </div>
             
             <div>
                 <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Detaylı Açıklama</label>
                 <textarea name="description" id="description" rows="6"
-                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                           placeholder="Ürünün detaylı açıklamasını girin"><?php echo $product ? htmlspecialchars($product['description']) : ''; ?></textarea>
             </div>
             
             <div>
                 <label for="features" class="block text-sm font-medium text-gray-700 mb-2">Özellikler</label>
                 <textarea name="features" id="features" rows="4"
-                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                           placeholder="Ürün özelliklerini her satıra bir tane olmak üzere girin"><?php echo $product ? htmlspecialchars($product['features']) : ''; ?></textarea>
                 <p class="text-sm text-gray-500 mt-1">Her özelliği yeni satıra yazın</p>
             </div>
@@ -304,7 +304,7 @@ include 'includes/header.php';
             <div>
                 <label for="usage_instructions" class="block text-sm font-medium text-gray-700 mb-2">Kullanım Talimatları</label>
                 <textarea name="usage_instructions" id="usage_instructions" rows="4"
-                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                           placeholder="Ürünün kullanım talimatlarını girin"><?php echo $product ? htmlspecialchars($product['usage_instructions']) : ''; ?></textarea>
             </div>
             
@@ -312,7 +312,7 @@ include 'includes/header.php';
                 <label for="main_image" class="block text-sm font-medium text-gray-700 mb-2">Ana Ürün Görseli</label>
                 <input type="file" name="main_image" id="main_image" accept="image/*"
                        onchange="previewImage(this, 'imagePreview')"
-                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
                 <p class="text-sm text-gray-500 mt-1">Desteklenen formatlar: JPG, PNG, GIF. Maksimum boyut: 5MB</p>
                 
                 <?php if ($product && $product['main_image']): ?>
@@ -328,12 +328,12 @@ include 'includes/header.php';
             <div class="flex items-center">
                 <input type="checkbox" name="is_active" id="is_active" value="1"
                        <?php echo (!$product || $product['is_active']) ? 'checked' : ''; ?>
-                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                       class="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded">
                 <label for="is_active" class="ml-2 block text-sm text-gray-700">Aktif</label>
             </div>
             
             <div class="flex space-x-4">
-                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition duration-300">
                     <i class="fas fa-save mr-2"></i>
                     <?php echo $action === 'add' ? 'Ürün Ekle' : 'Değişiklikleri Kaydet'; ?>
                 </button>

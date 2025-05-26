@@ -43,7 +43,7 @@ if ($_POST) {
                     // Try to reset password
                     $newHash = password_hash('admin123', PASSWORD_DEFAULT);
                     query("UPDATE admin_users SET password = ? WHERE id = ?", [$newHash, $admin['id']]);
-                    echo "<p style='color: blue;'>🔄 Password reset to 'admin123'. Try again.</p>";
+                    echo "<p style='color: red;'>🔄 Password reset to 'admin123'. Try again.</p>";
                 }
             } else {
                 echo "<p style='color: red;'>❌ User not found</p>";
@@ -73,7 +73,7 @@ if ($_POST) {
         <label>Password:</label><br>
         <input type="password" name="password" value="admin123" style="width: 100%; padding: 8px;">
     </div>
-    <button type="submit" style="background: blue; color: white; padding: 10px 20px; border: none; cursor: pointer;">
+    <button type="submit" style="background: red; color: white; padding: 10px 20px; border: none; cursor: pointer;">
         Test Login
     </button>
 </form>

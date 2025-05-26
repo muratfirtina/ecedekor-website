@@ -19,6 +19,7 @@ if ($_POST) {
         $product_id = intval($_POST['product_id']);
         $name = sanitizeInput($_POST['name']);
         $color = sanitizeInput($_POST['color']);
+        $color_code = sanitizeInput($_POST['color_code'] ?: $_POST['color_code_text']);
         $size = sanitizeInput($_POST['size']);
         $weight = sanitizeInput($_POST['weight']);
         $sku = sanitizeInput($_POST['sku']);
@@ -46,8 +47,8 @@ if ($_POST) {
                 }
                 
                 if (!$error) {
-                    $sql = "INSERT INTO product_variants (product_id, name, color, size, weight, sku, price, image, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                    $params = [$product_id, $name, $color, $size, $weight, $sku, $price, $image_path, $sort_order, $is_active];
+                    $sql = "INSERT INTO product_variants (product_id, name, color, color_code, size, weight, sku, price, image, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    $params = [$product_id, $name, $color, $color_code, $size, $weight, $sku, $price, $image_path, $sort_order, $is_active];
                     
                     if (query($sql, $params)) {
                         $success = 'Varyant başarıyla eklendi.';
@@ -66,8 +67,8 @@ if ($_POST) {
                 }
                 
                 if (!$error) {
-                    $sql = "UPDATE product_variants SET product_id = ?, name = ?, color = ?, size = ?, weight = ?, sku = ?, price = ?, sort_order = ?, is_active = ?";
-                    $params = [$product_id, $name, $color, $size, $weight, $sku, $price, $sort_order, $is_active];
+                    $sql = "UPDATE product_variants SET product_id = ?, name = ?, color = ?, color_code = ?, size = ?, weight = ?, sku = ?, price = ?, sort_order = ?, is_active = ?";
+                    $params = [$product_id, $name, $color, $color_code, $size, $weight, $sku, $price, $sort_order, $is_active];
                     
                     if ($image_path) {
                         $sql .= ", image = ?";
@@ -167,7 +168,7 @@ include 'includes/header.php';
         <div class="p-6 border-b border-gray-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <h2 class="text-xl font-semibold text-gray-900">Ürün Varyantları</h2>
+                    <h2 class="text-xl font-semibold text-black">Ürün Varyantları</h2>
                     <?php if ($selectedProduct): ?>
                         <p class="text-sm text-gray-600 mt-1">
                             <span class="font-medium"><?php echo htmlspecialchars($selectedProduct['category_name']); ?></span> > 
@@ -177,14 +178,14 @@ include 'includes/header.php';
                 </div>
                 <div class="flex space-x-2">
                     <?php if ($product_id): ?>
-                        <a href="?action=add&product_id=<?php echo $product_id; ?>" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                        <a href="?action=add&product_id=<?php echo $product_id; ?>" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300">
                             <i class="fas fa-plus mr-2"></i>Yeni Varyant
                         </a>
                         <a href="?action=list" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition duration-300">
                             <i class="fas fa-list mr-2"></i>Tüm Varyantlar
                         </a>
                     <?php else: ?>
-                        <a href="?action=add" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                        <a href="?action=add" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300">
                             <i class="fas fa-plus mr-2"></i>Yeni Varyant
                         </a>
                     <?php endif; ?>
@@ -199,7 +200,7 @@ include 'includes/header.php';
                     <input type="hidden" name="action" value="list">
                     <label for="filter_product" class="text-sm font-medium text-gray-700">Ürüne göre filtrele:</label>
                     <select name="product_id" id="filter_product" onchange="this.form.submit()"
-                            class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
                         <option value="">Tüm ürünler</option>
                         <?php foreach ($products as $product): ?>
                             <option value="<?php echo $product['id']; ?>" 
@@ -245,18 +246,21 @@ include 'includes/header.php';
                                             </div>
                                         <?php endif; ?>
                                         <div>
-                                            <div class="text-sm font-semibold text-gray-900"><?php echo htmlspecialchars($var['name']); ?></div>
+                                            <div class="text-sm font-semibold text-black"><?php echo htmlspecialchars($var['name']); ?></div>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900"><?php echo htmlspecialchars($var['product_name']); ?></div>
+                                    <div class="text-sm text-black"><?php echo htmlspecialchars($var['product_name']); ?></div>
                                     <div class="text-sm text-gray-500"><?php echo htmlspecialchars($var['category_name']); ?></div>
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="text-sm text-gray-700">
                                         <?php if ($var['color']): ?>
-                                            <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mr-1 mb-1">
+                                            <span class="inline-flex items-center bg-red-100 text-red-800 text-xs px-2 py-1 rounded mr-1 mb-1">
+                                                <?php if ($var['color_code']): ?>
+                                                    <span class="w-3 h-3 rounded-full mr-1 border border-gray-300" style="background-color: <?php echo $var['color_code']; ?>;"></span>
+                                                <?php endif; ?>
                                                 Renk: <?php echo htmlspecialchars($var['color']); ?>
                                             </span>
                                         <?php endif; ?>
@@ -274,14 +278,14 @@ include 'includes/header.php';
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <?php if ($var['sku']): ?>
-                                        <span class="text-sm font-mono text-gray-900"><?php echo htmlspecialchars($var['sku']); ?></span>
+                                        <span class="text-sm font-mono text-black"><?php echo htmlspecialchars($var['sku']); ?></span>
                                     <?php else: ?>
                                         <span class="text-sm text-gray-400">-</span>
                                     <?php endif; ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <?php if ($var['price']): ?>
-                                        <span class="text-sm font-semibold text-gray-900">₺<?php echo number_format($var['price'], 2); ?></span>
+                                        <span class="text-sm font-semibold text-black">₺<?php echo number_format($var['price'], 2); ?></span>
                                     <?php else: ?>
                                         <span class="text-sm text-gray-400">-</span>
                                     <?php endif; ?>
@@ -299,7 +303,7 @@ include 'includes/header.php';
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="flex space-x-2">
-                                        <a href="?action=edit&id=<?php echo $var['id']; ?>" class="text-blue-600 hover:text-blue-700" title="Düzenle">
+                                        <a href="?action=edit&id=<?php echo $var['id']; ?>" class="text-red-600 hover:text-red-700" title="Düzenle">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <a href="?action=delete&id=<?php echo $var['id']; ?><?php echo $product_id ? '&product_id=' . $product_id : ''; ?>" 
@@ -321,7 +325,7 @@ include 'includes/header.php';
     <!-- Add/Edit Variant Form -->
     <div class="bg-white rounded-lg shadow-md p-6 card">
         <div class="mb-6">
-            <h2 class="text-xl font-semibold text-gray-900">
+            <h2 class="text-xl font-semibold text-black">
                 <?php echo $action === 'add' ? 'Yeni Varyant Ekle' : 'Varyant Düzenle'; ?>
             </h2>
             <?php if ($selectedProduct): ?>
@@ -339,7 +343,7 @@ include 'includes/header.php';
                 <div>
                     <label for="product_id" class="block text-sm font-medium text-gray-700 mb-2">Ürün *</label>
                     <select name="product_id" id="product_id" required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
                         <option value="">Ürün seçin</option>
                         <?php foreach ($products as $product): ?>
                             <option value="<?php echo $product['id']; ?>" 
@@ -354,7 +358,7 @@ include 'includes/header.php';
                     <label for="sort_order" class="block text-sm font-medium text-gray-700 mb-2">Sıra Numarası</label>
                     <input type="number" name="sort_order" id="sort_order"
                            value="<?php echo $variant ? $variant['sort_order'] : '0'; ?>"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                            placeholder="0">
                 </div>
             </div>
@@ -363,24 +367,40 @@ include 'includes/header.php';
                 <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Varyant Adı *</label>
                 <input type="text" name="name" id="name" required
                        value="<?php echo $variant ? htmlspecialchars($variant['name']) : ''; ?>"
-                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                        placeholder="Varyant adını girin (örn: Doğal Renk, Meşe Rengi)">
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div>
                     <label for="color" class="block text-sm font-medium text-gray-700 mb-2">Renk</label>
                     <input type="text" name="color" id="color"
                            value="<?php echo $variant ? htmlspecialchars($variant['color']) : ''; ?>"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                            placeholder="Renk adını girin">
+                </div>
+                
+                <div>
+                    <label for="color_code" class="block text-sm font-medium text-gray-700 mb-2">Renk Kodu</label>
+                    <div class="flex items-center space-x-2">
+                        <input type="color" name="color_code" id="color_code"
+                               value="<?php echo $variant ? htmlspecialchars($variant['color_code']) : '#ffffff'; ?>"
+                               class="w-12 h-10 border border-gray-300 rounded cursor-pointer"
+                               onchange="document.getElementById('color_code_text').value = this.value">
+                        <input type="text" name="color_code_text" id="color_code_text"
+                               value="<?php echo $variant ? htmlspecialchars($variant['color_code']) : ''; ?>"
+                               class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                               placeholder="#ffffff"
+                               onchange="document.getElementById('color_code').value = this.value">
+                    </div>
+                    <p class="text-sm text-gray-500 mt-1">Renk seçici kullanın veya hex kod girin (örn: #ff0000)</p>
                 </div>
                 
                 <div>
                     <label for="size" class="block text-sm font-medium text-gray-700 mb-2">Boyut</label>
                     <input type="text" name="size" id="size"
                            value="<?php echo $variant ? htmlspecialchars($variant['size']) : ''; ?>"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                            placeholder="Boyut bilgisini girin">
                 </div>
                 
@@ -388,7 +408,7 @@ include 'includes/header.php';
                     <label for="weight" class="block text-sm font-medium text-gray-700 mb-2">Ağırlık/Hacim</label>
                     <input type="text" name="weight" id="weight"
                            value="<?php echo $variant ? htmlspecialchars($variant['weight']) : ''; ?>"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                            placeholder="Ağırlık veya hacim (örn: 200gr, 125ml)">
                 </div>
             </div>
@@ -398,7 +418,7 @@ include 'includes/header.php';
                     <label for="sku" class="block text-sm font-medium text-gray-700 mb-2">SKU (Stok Kodu)</label>
                     <input type="text" name="sku" id="sku"
                            value="<?php echo $variant ? htmlspecialchars($variant['sku']) : ''; ?>"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                            placeholder="Benzersiz stok kodu">
                 </div>
                 
@@ -406,7 +426,7 @@ include 'includes/header.php';
                     <label for="price" class="block text-sm font-medium text-gray-700 mb-2">Fiyat (₺)</label>
                     <input type="number" name="price" id="price" step="0.01" min="0"
                            value="<?php echo $variant ? $variant['price'] : ''; ?>"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                            placeholder="0.00">
                 </div>
             </div>
@@ -415,7 +435,7 @@ include 'includes/header.php';
                 <label for="image" class="block text-sm font-medium text-gray-700 mb-2">Varyant Görseli</label>
                 <input type="file" name="image" id="image" accept="image/*"
                        onchange="previewImage(this, 'imagePreview')"
-                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
                 <p class="text-sm text-gray-500 mt-1">Desteklenen formatlar: JPG, PNG, GIF. Maksimum boyut: 5MB</p>
                 
                 <?php if ($variant && $variant['image']): ?>
@@ -431,12 +451,12 @@ include 'includes/header.php';
             <div class="flex items-center">
                 <input type="checkbox" name="is_active" id="is_active" value="1"
                        <?php echo (!$variant || $variant['is_active']) ? 'checked' : ''; ?>
-                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                       class="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded">
                 <label for="is_active" class="ml-2 block text-sm text-gray-700">Aktif</label>
             </div>
             
             <div class="flex space-x-4">
-                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition duration-300">
                     <i class="fas fa-save mr-2"></i>
                     <?php echo $action === 'add' ? 'Varyant Ekle' : 'Değişiklikleri Kaydet'; ?>
                 </button>

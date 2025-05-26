@@ -1,15 +1,14 @@
     </main>
     
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white">
+    <footer class="bg-gradient-to-r from-gray-700 to-slate-600 text-white">
         <!-- Main Footer -->
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <!-- Company Info -->
                 <div class="lg:col-span-2">
                     <div class="flex items-center mb-4">
-                        <img class="h-8 w-auto mr-3" src="<?php echo getSetting('logo_path') ?: (IMAGES_URL . '/logo-white.png'); ?>" alt="<?php echo getSetting('company_name'); ?>" onerror="this.style.display='none'">
-                        <!-- <span class="text-2xl font-bold"><?php echo getSetting('company_name', 'ECEDEKOR'); ?></span> -->
+                        <img class="h-8 w-auto" src="<?php echo getSetting('logo_path') ?: (IMAGES_URL . '/logo-white.png'); ?>" alt="<?php echo getSetting('company_name'); ?>" onerror="this.style.display='none'">
                     </div>
                     <p class="text-gray-300 mb-4 leading-relaxed">
                         <?php echo getSetting('site_description', '1998 yılından bu yana mobilya sektöründe kaliteli ürünler üretiyoruz.'); ?>
@@ -46,15 +45,15 @@
                     <h3 class="text-lg font-semibold mb-4">İletişim</h3>
                     <div class="space-y-3">
                         <div class="flex items-start">
-                            <i class="fas fa-map-marker-alt text-blue-400 mt-1 mr-3"></i>
+                            <i class="fas fa-map-marker-alt text-red-400 mt-1 mr-3"></i>
                             <span class="text-gray-300 text-sm"><?php echo getSetting('company_address'); ?></span>
                         </div>
                         <div class="flex items-center">
-                            <i class="fas fa-phone text-blue-400 mr-3"></i>
+                            <i class="fas fa-phone text-red-400 mr-3"></i>
                             <a href="tel:<?php echo getSetting('company_phone'); ?>" class="text-gray-300 hover:text-white transition duration-300"><?php echo getSetting('company_phone'); ?></a>
                         </div>
                         <div class="flex items-center">
-                            <i class="fas fa-envelope text-blue-400 mr-3"></i>
+                            <i class="fas fa-envelope text-red-400 mr-3"></i>
                             <a href="mailto:<?php echo getSetting('company_email'); ?>" class="text-gray-300 hover:text-white transition duration-300"><?php echo getSetting('company_email'); ?></a>
                         </div>
                     </div>
@@ -96,7 +95,7 @@
     <div class="fixed bottom-6 right-6 z-50">
         <a href="https://wa.me/905551234567" target="_blank" class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition duration-300 flex items-center justify-center group">
             <i class="fab fa-whatsapp text-2xl"></i>
-            <span class="absolute right-full mr-3 bg-gray-900 text-white px-3 py-1 rounded text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition duration-300">
+            <span class="absolute right-full mr-3 bg-black text-white px-3 py-1 rounded text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition duration-300">
                 WhatsApp ile iletişim
             </span>
         </a>
@@ -108,7 +107,7 @@
             x-show="showScrollTop" 
             x-transition
             @click="window.scrollTo({top: 0, behavior: 'smooth'})"
-            class="fixed bottom-6 left-6 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg hover:shadow-xl transition duration-300 z-50">
+            class="fixed bottom-6 left-6 bg-red-600 hover:bg-red-700 text-white p-3 rounded-full shadow-lg hover:shadow-xl transition duration-300 z-50">
             <i class="fas fa-arrow-up"></i>
         </button>
     </div>
