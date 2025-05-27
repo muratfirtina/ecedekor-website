@@ -101,7 +101,7 @@ include 'includes/header.php';
                 <div class="text-gray-600">Kuruluş Yılı</div>
             </div>
             <div class="animate-on-scroll">
-                <div class="text-4xl font-bold text-red-600 mb-2">25+</div>
+                <div class="text-4xl font-bold text-red-600 mb-2"><?php echo (int)date('Y') - (int)getSetting('company_founded', 1998); ?>+</div>
                 <div class="text-gray-600">Yıllık Deneyim</div>
             </div>
             <div class="animate-on-scroll">
@@ -263,7 +263,7 @@ include 'includes/header.php';
                     <img src="<?php echo $aboutSection['image'] ? $aboutSection['image'] : (getSetting('about_image') ? getSetting('about_image') : IMAGES_URL . '/about-us.jpg'); ?>" alt="Hakkımızda" class="rounded-2xl w-full h-96 object-cover card-shadow">
                     <div class="absolute -bottom-6 -right-6 bg-red-600 text-white p-6 rounded-2xl card-shadow">
                         <div class="text-center">
-                            <div class="text-3xl font-bold">25+</div>
+                            <div class="text-3xl font-bold"><?php echo (int)date('Y') - (int)getSetting('company_founded', 1998); ?>+</div>
                             <div class="text-sm">Yıllık Deneyim</div>
                         </div>
                     </div>

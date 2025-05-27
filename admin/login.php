@@ -9,6 +9,15 @@ if (isAdminLoggedIn()) {
 
 $error = '';
 
+// Check for error messages from redirects
+if (isset($_GET['error'])) {
+    switch ($_GET['error']) {
+        case 'insufficient_permissions':
+            $error = 'Bu işlem için yeterli yetkiye sahip değilsiniz.';
+            break;
+    }
+}
+
 if ($_POST) {
     $username = sanitizeInput($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
@@ -20,12 +29,24 @@ if ($_POST) {
         $admin = fetchOne("SELECT * FROM admin_users WHERE username = ? OR email = ?", [$username, $username]);
         
         if ($admin && password_verify($password, $admin['password'])) {
-            $_SESSION['admin_id'] = $admin['id'];
-            $_SESSION['admin_username'] = $admin['username'];
-            $_SESSION['admin_email'] = $admin['email'];
-            
-            header('Location: ' . ADMIN_URL . '/dashboard.php');
-            exit;
+            if (!$admin['is_active']) {
+                $error = 'Hesabınız devre dışı bırakılmış. Lütfen yönetici ile iletişime geçin.';
+            } else {
+                $_SESSION['admin_id'] = $admin['id'];
+                $_SESSION['admin_username'] = $admin['username'];
+                $_SESSION['admin_email'] = $admin['email'];
+                $_SESSION['admin_role'] = $admin['role'];
+                $_SESSION['admin_full_name'] = trim(($admin['first_name'] ?? '') . ' ' . ($admin['last_name'] ?? ''));
+                
+                // Log session and update last login
+                $ipAddress = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+                $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
+                logUserSession($admin['id'], $ipAddress, $userAgent);
+                updateLastLogin($admin['id']);
+                
+                header('Location: ' . ADMIN_URL . '/dashboard.php');
+                exit;
+            }
         } else {
             $error = 'Kullanıcı adı veya şifre hatalı.';
         }

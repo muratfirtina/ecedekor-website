@@ -133,6 +133,23 @@ CREATE TABLE `site_settings` (
   UNIQUE KEY `setting_key` (`setting_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `contact_messages` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `phone` varchar(50) DEFAULT NULL,
+  `company` varchar(255) DEFAULT NULL,
+  `subject` varchar(255) DEFAULT NULL,
+  `message` text NOT NULL,
+  `product_info` varchar(255) DEFAULT NULL, -- İlgili ürün bilgisi için
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` text DEFAULT NULL,
+  `is_read` tinyint(1) NOT NULL DEFAULT 0, -- 0: okunmadı, 1: okundu
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Insert sample data
 
 -- Admin user (password: admin123)
@@ -178,7 +195,7 @@ INSERT INTO `site_settings` (`setting_key`, `setting_value`, `setting_type`) VAL
 ('site_description', 'Ahşap tamir macunları, zemin koruyucu keçeler ve yapışkanlı tapalar konusunda 25 yıllık deneyimle hizmet veriyoruz.', 'textarea'),
 ('company_name', 'ECEDEKOR', 'text'),
 ('company_address', 'Cevizli Mah. Yeşil Sk. Şaman San. Sitesi No: 1/D Maltepe - İSTANBUL', 'textarea'),
-('company_phone', '+90 216 123 45 67', 'text'),
+('company_phone', '+90 216 371 91 77', 'text'),
 ('company_email', 'info@ecedekor.com.tr', 'text'),
 ('company_founded', '1998', 'text'),
 ('logo_path', '/assets/images/logo.png', 'image'),
@@ -187,7 +204,6 @@ INSERT INTO `site_settings` (`setting_key`, `setting_value`, `setting_type`) VAL
 ALTER TABLE `product_variants` ADD COLUMN `color_code` VARCHAR(7) DEFAULT NULL AFTER `color`;
 
 -- Mevcut varyantlara örnek renk kodları ekleyin
-UPDATE `product_variants` SET `color_code` = '#F5DEB3' WHERE `color` = 'Doğal';
 UPDATE `product_variants` SET `color_code` = '#8B4513' WHERE `color` = 'Meşe';
 UPDATE `product_variants` SET `color_code` = '#654321' WHERE `color` = 'Ceviz';
 UPDATE `product_variants` SET `color_code` = '#000000' WHERE `color` = 'Siyah';

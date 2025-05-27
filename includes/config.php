@@ -110,12 +110,23 @@ function verifyCSRFToken($token) {
 // File upload helper
 function uploadFile($file, $directory = 'uploads') {
     if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
+        error_log('Upload error: ' . ($file['error'] ?? 'File not set'));
         return false;
     }
     
+    // Create upload directory if it doesn't exist
     $uploadDir = UPLOAD_DIR . $directory . '/';
     if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0755, true);
+        if (!mkdir($uploadDir, 0755, true)) {
+            error_log('Could not create upload directory: ' . $uploadDir);
+            return false;
+        }
+    }
+    
+    // Check if directory is writable
+    if (!is_writable($uploadDir)) {
+        error_log('Upload directory is not writable: ' . $uploadDir);
+        return false;
     }
     
     $fileName = $file['name'];
@@ -125,11 +136,13 @@ function uploadFile($file, $directory = 'uploads') {
     
     // Check file size
     if ($fileSize > MAX_FILE_SIZE) {
+        error_log('File too large: ' . $fileSize . ' bytes');
         return false;
     }
     
     // Check file extension
     if (!in_array($fileExt, ALLOWED_EXTENSIONS)) {
+        error_log('Invalid file extension: ' . $fileExt);
         return false;
     }
     
@@ -137,12 +150,22 @@ function uploadFile($file, $directory = 'uploads') {
     $newFileName = uniqid() . '.' . $fileExt;
     $uploadPath = $uploadDir . $newFileName;
     
-    if (move_uploaded_file($fileTmp, $uploadPath)) {
-        // Return full URL to the file instead of relative path
-        return BASE_URL . '/assets/images/' . $directory . '/' . $newFileName;
-    }
+    // Debug logging
+    error_log("Upload attempt - From: $fileTmp To: $uploadPath");
+    error_log("Directory: $uploadDir (exists: " . (is_dir($uploadDir) ? 'yes' : 'no') . ")");
     
-    return false;
+    if (move_uploaded_file($fileTmp, $uploadPath)) {
+        // Set proper file permissions
+        chmod($uploadPath, 0644);
+        
+        // Return full URL to the file
+        $fileUrl = BASE_URL . '/assets/images/' . $directory . '/' . $newFileName;
+        error_log('File uploaded successfully: ' . $fileUrl);
+        return $fileUrl;
+    } else {
+        error_log('Failed to move uploaded file from ' . $fileTmp . ' to ' . $uploadPath);
+        return false;
+    }
 }
 
 // Sanitize input
@@ -156,5 +179,86 @@ function generateSlug($string) {
     $string = preg_replace('/[^a-z0-9\s-]/', '', $string);
     $string = preg_replace('/[\s-]+/', '-', $string);
     return trim($string, '-');
+}
+
+// User role and permission functions
+function getUserInfo($userId) {
+    return fetchOne("SELECT * FROM admin_users WHERE id = ?", [$userId]);
+}
+
+function hasRole($role) {
+    if (!isAdminLoggedIn()) return false;
+    $user = getUserInfo($_SESSION['admin_id']);
+    return $user && $user['role'] === $role;
+}
+
+function hasPermission($permission) {
+    if (!isAdminLoggedIn()) return false;
+    
+    // Admins have all permissions
+    if (hasRole('admin')) return true;
+    
+    $result = fetchOne("SELECT id FROM user_permissions WHERE user_id = ? AND permission = ?", 
+                      [$_SESSION['admin_id'], $permission]);
+    return $result !== null;
+}
+
+function requireRole($role) {
+    if (!hasRole($role)) {
+        header('Location: ' . ADMIN_URL . '/login.php?error=insufficient_permissions');
+        exit;
+    }
+}
+
+function requirePermission($permission) {
+    if (!hasPermission($permission)) {
+        header('Location: ' . ADMIN_URL . '/login.php?error=insufficient_permissions');
+        exit;
+    }
+}
+
+function logUserSession($userId, $ipAddress, $userAgent) {
+    return query("INSERT INTO user_sessions (user_id, ip_address, user_agent) VALUES (?, ?, ?)", 
+                [$userId, $ipAddress, $userAgent]);
+}
+
+function updateLastLogin($userId) {
+    return query("UPDATE admin_users SET last_login = NOW() WHERE id = ?", [$userId]);
+}
+
+function getActiveUsers() {
+    return fetchAll("SELECT u.*, s.login_time FROM admin_users u 
+                    LEFT JOIN user_sessions s ON u.id = s.user_id AND s.is_active = 1 
+                    WHERE u.is_active = 1 ORDER BY u.role, u.username");
+}
+
+function getUserPermissions($userId) {
+    return fetchAll("SELECT permission FROM user_permissions WHERE user_id = ?", [$userId]);
+}
+
+function addUserPermission($userId, $permission) {
+    return query("INSERT IGNORE INTO user_permissions (user_id, permission) VALUES (?, ?)", 
+                [$userId, $permission]);
+}
+
+function removeUserPermission($userId, $permission) {
+    return query("DELETE FROM user_permissions WHERE user_id = ? AND permission = ?", 
+                [$userId, $permission]);
+}
+
+// Available permissions
+function getAvailablePermissions() {
+    return [
+        'categories_manage' => 'Kategori Yönetimi',
+        'products_manage' => 'Ürün Yönetimi',
+        'variants_manage' => 'Varyant Yönetimi',
+        'testimonials_manage' => 'Yorum Yönetimi',
+        'homepage_manage' => 'Ana Sayfa Yönetimi',
+        'settings_manage' => 'Site Ayarları',
+        'files_manage' => 'Dosya Yönetimi',
+        'users_manage' => 'Kullanıcı Yönetimi',
+        'users_create' => 'Kullanıcı Oluşturma',
+        'reports_view' => 'Rapor Görüntüleme'
+    ];
 }
 ?>

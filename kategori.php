@@ -40,7 +40,7 @@ if (!$category) {
 $pageTitle = $category['name'];
 $pageDescription = $category['description'] ?: 'Kaliteli ' . $category['name'] . ' ürünlerini keşfedin.';
 
-// Bu kategorideki ürünleri çek (DOĞRU $category['id'] KULLANILIYOR)
+// Bu kategorideki ürünleri çek (ana ürün kartları için)
 $products = fetchAll("
     SELECT p.*,
            (SELECT pv.image FROM product_variants pv WHERE pv.product_id = p.id AND pv.image IS NOT NULL AND pv.image != '' ORDER BY pv.sort_order LIMIT 1) as variant_image,
@@ -50,14 +50,47 @@ $products = fetchAll("
     ORDER BY p.sort_order, p.name
 ", [$category['id']]);
 
+// Ürün varyantları için bilgi çek
 $productVariants = [];
 foreach ($products as $product) {
     $productVariants[$product['id']] = fetchAll("
-        SELECT id, name, color, color_code, size, weight, sku, price FROM product_variants
-        WHERE product_id = ? AND is_active = 1
+        SELECT id, name, color, color_code, size, weight, sku, price FROM product_variants 
+        WHERE product_id = ? AND is_active = 1 
         ORDER BY sort_order, name
     ", [$product['id']]);
 }
+
+// Bu kategorideki tüm varyantları çek (varyant kartları için)
+$allVariants = fetchAll("
+    SELECT 
+        p.id as product_id,
+        p.name as product_name,
+        p.slug as product_slug,
+        p.short_description as product_description,
+        p.features as product_features,
+        p.main_image as product_main_image,
+        pv.id as variant_id,
+        pv.name as variant_name,
+        pv.color,
+        pv.color_code,
+        pv.size,
+        pv.weight,
+        pv.sku,
+        pv.price,
+        pv.image as variant_image,
+        pv.sort_order as variant_sort_order
+    FROM products p
+    INNER JOIN product_variants pv ON p.id = pv.product_id AND pv.is_active = 1
+    WHERE p.category_id = ? AND p.is_active = 1
+    ORDER BY p.sort_order, p.name, pv.sort_order, pv.name
+", [$category['id']]);
+
+// Toplam öğe sayısı
+$totalVariants = 0;
+foreach ($products as $p) {
+    $totalVariants += $p['variant_count'];
+}
+$totalItems = count($products) + $totalVariants;
 
 $otherCategories = fetchAll("SELECT * FROM categories WHERE id != ? AND is_active = 1 ORDER BY sort_order", [$category['id']]);
 
@@ -101,15 +134,7 @@ include 'includes/header.php'; // Bu dosya global $category değişkenini deği�
                 </div>
                 <div class="flex items-center">
                     <i class="fas fa-palette mr-2"></i>
-                    <span class="font-semibold">
-                        <?php
-                        $totalVariants = 0;
-                        foreach ($products as $p) {
-                            $totalVariants += $p['variant_count'];
-                        }
-                        echo $totalVariants;
-                        ?> Varyant
-                    </span>
+                    <span class="font-semibold"><?php echo count($allVariants); ?> Varyant</span>
                 </div>
                 <div class="flex items-center">
                     <i class="fas fa-award mr-2"></i>
@@ -153,12 +178,14 @@ include 'includes/header.php'; // Bu dosya global $category değişkenini deği�
                     <?php echo htmlspecialchars($displayCategory['name']); // $displayCategory kullanılıyor ?> Ürünleri
                 </h2>
                 <p class="text-gray-600 max-w-3xl mx-auto">
-                    Bu kategoride <?php echo count($products); ?> adet kaliteli ürün bulundu. İhtiyaçlarınıza en uygun olanı seçin.
+                    Bu kategoride <?php echo count($products); ?> ürün ve <?php echo count($allVariants); ?> varyant bulundu. İhtiyaçlarınıza en uygun olanı seçin.
                 </p>
             </div>
             
             <!-- Products Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                
+                <!-- Ana Ürünleri Göster -->
                 <?php foreach ($products as $product): ?>
                     <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition duration-300 hover-scale animate-on-scroll">
                         <!-- Product Image -->
@@ -173,7 +200,7 @@ include 'includes/header.php'; // Bu dosya global $category değişkenini deği�
                             <!-- Variant Count Badge -->
                             <?php if ($product['variant_count'] > 0): ?>
                                 <div class="absolute top-4 right-4">
-                                    <span class="bg-purple-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                                    <span class="bg-red-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
                                         <?php echo $product['variant_count']; ?> Varyant
                                     </span>
                                 </div>
@@ -225,9 +252,6 @@ include 'includes/header.php'; // Bu dosya global $category değişkenini deği�
                                                     <?php endif; ?>
                                                 </div>
                                                 <div class="text-right">
-                                                    <!-- <?php if ($variant['price']): ?>
-                                                        <div class="text-sm font-semibold text-red-600">₺<?php echo number_format($variant['price'], 2); ?></div>
-                                                    <?php endif; ?> -->
                                                     <?php if ($variant['sku']): ?>
                                                         <div class="text-xs text-gray-400 font-mono"><?php echo htmlspecialchars($variant['sku']); ?></div>
                                                     <?php endif; ?>
@@ -242,6 +266,7 @@ include 'includes/header.php'; // Bu dosya global $category değişkenini deği�
                                     <?php endif; ?>
                                 </div>
                             <?php endif; ?>
+
                             <?php if (!empty($product['features'])): ?>
                                 <div class="mb-4 text-sm text-gray-600 h-10 overflow-hidden">
                                     <?php
@@ -263,6 +288,7 @@ include 'includes/header.php'; // Bu dosya global $category değişkenini deği�
                             <?php else: ?>
                                  <div class="mb-4 h-10"></div>
                             <?php endif; ?>
+                            
                             <div class="flex items-center justify-between pt-2 border-t border-gray-100">
                                 <a href="<?php echo BASE_URL; ?>/urun/<?php echo htmlspecialchars($product['slug']); ?>"
                                    class="bg-red-600 text-white px-5 py-2.5 rounded-lg hover:bg-red-700 transition duration-300 text-sm font-medium shadow hover:shadow-md">
@@ -280,6 +306,119 @@ include 'includes/header.php'; // Bu dosya global $category değişkenini deği�
                         </div>
                     </div>
                 <?php endforeach; ?>
+                                
+                <!-- Varyantları Ayrı Kartlar Olarak Göster -->
+                <?php foreach ($allVariants as $variant): ?>
+                    <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition duration-300 hover-scale animate-on-scroll border-l-4 border-red-500">
+                        <!-- Variant Color/Image -->
+                        <div class="relative h-64 bg-gray-200 group">
+                            <?php if (!empty($variant['color_code'])): ?>
+                                <!-- Renk göstergesi -->
+                                <div class="w-full h-full flex items-center justify-center" style="background: <?php echo htmlspecialchars($variant['color_code']); ?>;">
+                                    <div class="text-center text-white drop-shadow-lg">
+                                        <div class="font-semibold text-lg"><?php echo htmlspecialchars($variant['color']); ?></div>
+                                    </div>
+                                </div>
+                            <?php elseif (!empty($variant['variant_image'])): ?>
+                                <!-- Varyant görseli -->
+                                <img src="<?php echo htmlspecialchars($variant['variant_image']); ?>" 
+                                     alt="<?php echo htmlspecialchars($variant['variant_name']); ?>" 
+                                     class="w-full h-full object-cover transition duration-300 group-hover:scale-105">
+                            <?php else: ?>
+                                <!-- Varsayılan görsel -->
+                                <div class="w-full h-full bg-gradient-to-br from-red-300 to-red-400 flex items-center justify-center">
+                                    <div class="text-center text-white">
+                                        <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <i class="fas fa-cube text-3xl"></i>
+                                        </div>
+                                        <div class="font-semibold text-lg"><?php echo htmlspecialchars($variant['variant_name']); ?></div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <!-- SKU Badge -->
+                            <?php if (!empty($variant['sku'])): ?>
+                                <div class="absolute top-4 right-4">
+                                    <span class="bg-black bg-opacity-70 text-white px-2 py-1 rounded-full text-xs font-mono">
+                                        <?php echo htmlspecialchars($variant['sku']); ?>
+                                    </span>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <!-- Price Badge -->
+                            <!-- <?php if (!empty($variant['price'])): ?>
+                                <div class="absolute top-4 left-4">
+                                    <span class="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                        ₺<?php echo number_format($variant['price'], 2); ?>
+                                    </span>
+                                </div>
+                            <?php endif; ?> -->
+                            
+                            <!-- Overlay on hover -->
+                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                                <a href="<?php echo BASE_URL; ?>/urun-varyant/<?php echo htmlspecialchars($variant['product_slug']); ?>/<?php echo $variant['variant_id']; ?>" 
+                                   class="bg-white text-black px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition duration-300 transform translate-y-4 group-hover:translate-y-0">
+                                    <i class="fas fa-eye mr-2"></i>İncele
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Variant Info -->
+                        <div class="p-6">
+                            <div class="mb-2 flex items-center">
+                                <i class="fas fa-palette text-red-500 mr-2 text-sm"></i>
+                                <span class="text-xs text-red-600 uppercase tracking-wide font-semibold">
+                                    <?php echo htmlspecialchars($variant['product_name']); ?> Varyantı
+                                </span>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold text-black mb-2">
+                                <a href="<?php echo BASE_URL; ?>/urun-varyant/<?php echo htmlspecialchars($variant['product_slug']); ?>/<?php echo $variant['variant_id']; ?>" 
+                                   class="hover:text-red-600 transition duration-300">
+                                    <?php echo htmlspecialchars($variant['variant_name']); ?>
+                                </a>
+                            </h3>
+                            
+                            <!-- Variant Properties -->
+                            <div class="mb-4 space-y-1">
+                                <?php if (!empty($variant['size'])): ?>
+                                    <div class="flex items-center text-sm text-gray-600">
+                                        <i class="fas fa-ruler-horizontal mr-2 text-xs"></i>
+                                        <span>Boyut: <?php echo htmlspecialchars($variant['size']); ?></span>
+                                    </div>
+                                <?php endif; ?>
+                                <?php if (!empty($variant['weight'])): ?>
+                                    <div class="flex items-center text-sm text-gray-600">
+                                        <i class="fas fa-weight-hanging mr-2 text-xs"></i>
+                                        <span><?php echo htmlspecialchars($variant['weight']); ?></span>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            
+                            <?php if (!empty($variant['product_description'])): ?>
+                                <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+                                    <?php echo htmlspecialchars($variant['product_description']); ?>
+                                </p>
+                            <?php endif; ?>
+                            
+                            <div class="flex items-center justify-between pt-2 border-t border-gray-100">
+                                <a href="<?php echo BASE_URL; ?>/urun-varyant/<?php echo htmlspecialchars($variant['product_slug']); ?>/<?php echo $variant['variant_id']; ?>"
+                                   class="bg-red-600 text-white px-5 py-2.5 rounded-lg hover:bg-red-700 transition duration-300 text-sm font-medium shadow hover:shadow-md">
+                                    Varyant Detayı
+                                </a>
+                                <div class="flex space-x-2">
+                                    <button class="text-gray-400 hover:text-red-500 transition duration-300 p-2 rounded-full hover:bg-red-50" title="Favorilere Ekle">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                    <button class="text-gray-400 hover:text-red-500 transition duration-300 p-2 rounded-full hover:bg-red-50" title="Paylaş">
+                                        <i class="fas fa-share-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+                
             </div>
         <?php endif; ?>
     </div>
@@ -367,23 +506,17 @@ include 'includes/header.php'; // Bu dosya global $category değişkenini deği�
 </section>
 
 <style>
-/* Stiller önceki yanıttaki gibi kalabilir, bir değişiklik gerekmiyor */
 .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
 .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .parallax { background-attachment: fixed; background-position: center; background-repeat: no-repeat; background-size: cover; }
 .text-shadow { text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
 .card-shadow { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
-.product-card-hover:hover {
-    /* transform: scale(1.03); // Bu zaten hover-scale ile var gibi, gerekirse sadeleştirilebilir */
-    /* box-shadow: 0 10px 20px rgba(0,0,0,0.1), 0 6px 6px rgba(0,0,0,0.08); // Daha belirgin gölge için */
-}
 .animate-on-scroll { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
 .animate-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
 </style>
 
 <script>
-// JS önceki yanıttaki gibi kalabilir, bir değişiklik gerekmiyor
 document.addEventListener("DOMContentLoaded", function() {
     const animatedElements = document.querySelectorAll('.animate-on-scroll');
     if (typeof IntersectionObserver === 'function') {

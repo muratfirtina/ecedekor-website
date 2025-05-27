@@ -241,19 +241,19 @@
                             <i class="far fa-envelope mr-2"></i>
                             <?php echo getSetting('company_email'); ?>
                         </a>
-                        <span class="hidden md:flex items-center">
+                        <!-- <span class="hidden md:flex items-center">
                             <i class="far fa-clock mr-2"></i>
                             Pazartesi - Cuma: 08:00 - 18:00
-                        </span>
+                        </span> -->
                     </div>
                     <div class="flex items-center space-x-4">
-                        <a href="#" class="hover:text-red-300 transition duration-300">
+                        <a href="#" class="hover:text-blue-400 transition duration-300">
                             <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a href="#" class="hover:text-red-300 transition duration-300">
+                        <a href="#" class="hover:text-red-400 transition duration-300">
                             <i class="fab fa-instagram"></i>
                         </a>
-                        <a href="#" class="hover:text-red-300 transition duration-300">
+                        <a href="#" class="hover:text-blue-500 transition duration-300">
                             <i class="fab fa-linkedin-in"></i>
                         </a>
                     </div>
@@ -331,7 +331,7 @@
                     <button class="search-icon text-gray-600 hover:text-red-600 p-2" title="Ara">
                         <i class="fas fa-search text-lg"></i>
                     </button>
-                    <a href="tel:<?php echo getSetting('company_phone'); ?>"
+                    <a href="tel:<?php echo str_replace(' ', '', getSetting('company_mobile') ?: getSetting('company_phone')); ?>"
                         class="cta-button text-white px-6 py-3 rounded-full font-semibold flex items-center space-x-2">
                         <i class="fas fa-phone"></i>
                         <span>Hemen Ara</span>
