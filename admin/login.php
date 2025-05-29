@@ -1,9 +1,33 @@
 <?php
-require_once '../includes/config.php';
+require_once 'includes/config.php';
+
+// Debug: Session ve CSRF token durumunu kontrol et
+if (isset($_GET['debug'])) {
+    echo "<pre>";
+    echo "Session Status: " . session_status() . "\n";
+    echo "Session ID: " . session_id() . "\n";
+    echo "Session Name: " . session_name() . "\n";
+    echo "Host: " . $_SERVER['HTTP_HOST'] . "\n";
+    echo "CSRF Token in Session: " . ($_SESSION['csrf_token'] ?? 'NOT SET') . "\n";
+    $generatedToken = generateCSRFToken();
+    echo "Generated Token: " . $generatedToken . "\n";
+    echo "Token Length: " . strlen($generatedToken) . "\n";
+    echo "Session Array: " . print_r($_SESSION, true) . "\n";
+    echo "</pre>";
+    exit;
+}
+
+// Auto-test login with debug_login URL
+if (isset($_GET['debug_login']) && !$_POST) {
+    // Otomatik olarak admin/admin123 ile login deneyelim
+    $_POST['username'] = 'admin';
+    $_POST['password'] = 'admin123';
+    $_POST['csrf_token'] = generateCSRFToken();
+}
 
 // Redirect if already logged in
 if (isAdminLoggedIn()) {
-    header('Location: ' . ADMIN_URL . '/dashboard.php');
+    header('Location: dashboard.php');
     exit;
 }
 
@@ -23,8 +47,40 @@ if ($_POST) {
     $password = $_POST['password'] ?? '';
     $csrf_token = $_POST['csrf_token'] ?? '';
     
+    // Debug POST data
+    if (isset($_GET['debug_login'])) {
+        echo "<pre>";
+        echo "=== POST DEBUG ===\n";
+        echo "Username: " . $username . "\n";
+        echo "Password Length: " . strlen($password) . "\n";
+        echo "POST CSRF Token: " . $csrf_token . "\n";
+        echo "Session CSRF Token: " . ($_SESSION['csrf_token'] ?? 'NOT SET') . "\n";
+        echo "Tokens Match: " . (verifyCSRFToken($csrf_token) ? 'YES' : 'NO') . "\n";
+        echo "\n=== USER LOOKUP ===\n";
+        
+        if ($username) {
+            $admin = fetchOne("SELECT id, username, email, role, is_active, password FROM admin_users WHERE username = ? OR email = ?", [$username, $username]);
+            if ($admin) {
+                echo "User found: YES\n";
+                echo "User ID: " . $admin['id'] . "\n";
+                echo "Username: " . $admin['username'] . "\n";
+                echo "Email: " . $admin['email'] . "\n";
+                echo "Role: " . $admin['role'] . "\n";
+                echo "Is Active: " . ($admin['is_active'] ? 'YES' : 'NO') . "\n";
+                echo "Password Hash: " . substr($admin['password'], 0, 20) . "...\n";
+                if ($password) {
+                    echo "Password Verify: " . (password_verify($password, $admin['password']) ? 'YES' : 'NO') . "\n";
+                }
+            } else {
+                echo "User found: NO\n";
+            }
+        }
+        echo "</pre>";
+        exit;
+    }
+    
     if (!verifyCSRFToken($csrf_token)) {
-        $error = 'Güvenlik hatası. Lütfen tekrar deneyin.';
+        $error = 'Güvenlik hatası. Lütfen tekrar deneyin. (Token: ' . substr($csrf_token, 0, 10) . '... / Session: ' . substr($_SESSION['csrf_token'] ?? 'NONE', 0, 10) . '...)';
     } else if ($username && $password) {
         $admin = fetchOne("SELECT * FROM admin_users WHERE username = ? OR email = ?", [$username, $username]);
         
@@ -44,7 +100,7 @@ if ($_POST) {
                 logUserSession($admin['id'], $ipAddress, $userAgent);
                 updateLastLogin($admin['id']);
                 
-                header('Location: ' . ADMIN_URL . '/dashboard.php');
+                header('Location: dashboard.php');
                 exit;
             }
         } else {
@@ -78,6 +134,7 @@ if ($_POST) {
             </div>
             <h1 class="text-3xl font-bold text-black mb-2">Admin Paneli</h1>
             <p class="text-gray-600">ECEDEKOR Yönetim Sistemi</p>
+            <p class="text-sm text-gray-500 mt-2">admin.ecedekor.com.tr</p>
         </div>
         
         <!-- Error Message -->
@@ -145,8 +202,8 @@ if ($_POST) {
                         Beni hatırla
                     </label>
                 </div>
-                <a href="#" class="text-sm text-indigo-600 hover:text-indigo-500 transition duration-300">
-                    Şifremi unuttum
+                <a href="<?php echo MAIN_SITE_URL; ?>" class="text-sm text-indigo-600 hover:text-indigo-500 transition duration-300">
+                    Ana Siteye Dön
                 </a>
             </div>
             
@@ -158,6 +215,13 @@ if ($_POST) {
                 Giriş Yap
             </button>
         </form>
+        
+        <!-- Debug Buttons (Geliştirme için) -->
+        <div class="mt-6 text-center space-x-2">
+            <a href="?debug=1" class="text-xs text-gray-500 hover:text-gray-700">Debug Session</a>
+            <span class="text-gray-300">|</span>
+            <a href="?debug_login=1" class="text-xs text-gray-500 hover:text-gray-700">Test Login Debug</a>
+        </div>
         
         <!-- Footer -->
         <div class="mt-8 text-center text-sm text-gray-500">

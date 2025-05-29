@@ -1,13 +1,14 @@
 <?php
 /**
- * Database Configuration for ECEDEKOR Website - PRODUCTION
+ * Admin Panel Configuration for ECEDEKOR - SUBDOMAIN
+ * admin.ecedekor.com.tr
  */
 
 // Database credentials - HOSTING BİLGİLERİNİZLE DEĞİŞTİRİN
-define('DB_HOST', 'localhost'); // Genellikle localhost kalır
-define('DB_USERNAME', 'ecedekor_admin'); // cPanel'de oluşturduğunuz kullanıcı
-define('DB_PASSWORD', 'root'); // Veritabanı şifreniz
-define('DB_NAME', 'ecedekor_db'); // cPanel'de oluşturduğunuz veritabanı
+define('DB_HOST', 'localhost');
+define('DB_USERNAME', 'ecedekor_admin');    // cPanel'de oluşturduğunuz kullanıcı
+define('DB_PASSWORD', 'root');       // Veritabanı şifreniz
+define('DB_NAME', 'ecedekor_db');           // cPanel'de oluşturduğunuz veritabanı
 
 // Database connection
 try {
@@ -25,19 +26,19 @@ try {
     die("Database connection failed: " . $e->getMessage());
 }
 
-// URL Configuration for Subdomain
+// URL Configuration - Hosting Ortamı için
 define('MAIN_SITE_URL', 'https://www.ecedekor.com.tr');
 define('ADMIN_BASE_URL', 'https://admin.ecedekor.com.tr');
-define('BASE_URL', MAIN_SITE_URL); // Ana site için
-define('ADMIN_URL', ADMIN_BASE_URL); // Admin için
+define('BASE_URL', MAIN_SITE_URL);
+define('ADMIN_URL', ADMIN_BASE_URL);
 
-// Assets URLs
-define('ADMIN_ASSETS_URL', ADMIN_BASE_URL . '/assets');
+// Assets URLs - Ana sitedeki assets klasörünü kullan
+define('ADMIN_ASSETS_URL', MAIN_SITE_URL . '/assets');
 define('MAIN_ASSETS_URL', MAIN_SITE_URL . '/assets');
 define('IMAGES_URL', MAIN_ASSETS_URL . '/images');
 
-// File upload paths - Ana sitedeki assets klasörünü kullan
-define('UPLOAD_DIR', $_SERVER['DOCUMENT_ROOT'] . '/../public_html/assets/images/');
+// File upload paths - Ana sitedeki assets klasörüne yükle
+define('UPLOAD_DIR', $_SERVER['DOCUMENT_ROOT'] . '/../assets/images/');
 define('MAX_FILE_SIZE', 5 * 1024 * 1024); // 5MB
 define('ALLOWED_EXTENSIONS', ['jpg', 'jpeg', 'png', 'gif', 'webp']);
 
@@ -45,19 +46,22 @@ define('ALLOWED_EXTENSIONS', ['jpg', 'jpeg', 'png', 'gif', 'webp']);
 define('ADMIN_SESSION_NAME', 'ecedekor_admin');
 session_name(ADMIN_SESSION_NAME);
 
-// Güvenlik için admin subdomaininde olmadığımızı kontrol et
-if (!isset($_SERVER['HTTP_HOST']) || 
-    (strpos($_SERVER['HTTP_HOST'], 'admin.') === false && 
-     !in_array(basename($_SERVER['PHP_SELF']), ['login.php']))) {
-    
-    // Ana siteden admin'e erişim engelle
-    if (strpos($_SERVER['REQUEST_URI'], '/admin') !== false) {
-        header('Location: ' . ADMIN_BASE_URL);
+// Admin subdomain güvenlik kontrolü - Hosting Ortamı
+$isValidAdminDomain = strpos($_SERVER['HTTP_HOST'], 'admin.ecedekor.com.tr') !== false;
+
+if (!isset($_SERVER['HTTP_HOST']) || !$isValidAdminDomain) {
+    // Eğer admin subdomain'i değilse ve login sayfası değilse yönlendir
+    if (!in_array(basename($_SERVER['PHP_SELF']), ['login.php', 'index.php'])) {
+        header('Location: ' . ADMIN_BASE_URL . '/login.php');
         exit;
     }
 }
 
 if (session_status() === PHP_SESSION_NONE) {
+    // Hosting ortamı için güvenli session ayarları
+    ini_set('session.cookie_secure', '1');
+    ini_set('session.cookie_httponly', '1');
+    ini_set('session.cookie_samesite', 'Strict');
     session_start();
 }
 
@@ -185,7 +189,7 @@ function generateSlug($string) {
     return trim($string, '-');
 }
 
-// User management functions (aynı kalır)
+// User management functions
 function getUserInfo($userId) {
     return fetchOne("SELECT * FROM admin_users WHERE id = ?", [$userId]);
 }
