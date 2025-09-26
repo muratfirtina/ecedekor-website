@@ -4,13 +4,28 @@
  * admin.ecedekor.com.tr
  */
 
-// Database credentials - HOSTING BİLGİLERİNİZLE DEĞİŞTİRİN
-define('DB_HOST', 'localhost');
-define('DB_USERNAME', 'ecedekor_admin');    // cPanel'de oluşturduğunuz kullanıcı
-define('DB_PASSWORD', 'root');       // Veritabanı şifreniz
-define('DB_NAME', 'ecedekor_db');           // cPanel'de oluşturduğunuz veritabanı
+// Output buffering başlat (session problem çözümü için)
+if (!ob_get_level()) {
+    ob_start();
+}
 
-// Database connection
+// Database credentials
+define('DB_HOST', 'localhost');
+define('DB_USERNAME', 'ecedekor_admin');
+define('DB_PASSWORD', '2309Mf1983.');
+define('DB_NAME', 'ecedekor_db');
+
+// Senkronizasyon için Teklif Sistemi Database Bilgileri
+define('TEKLIF_DB_HOST', 'localhost');
+define('TEKLIF_DB_USERNAME', 'ecedekor_admin');
+define('TEKLIF_DB_PASSWORD', '2309Mf1983.');
+define('TEKLIF_DB_NAME', 'ecedekor_teklif');
+
+// Senkronizasyon Ayarları
+define('AUTO_SYNC_ENABLED', true);
+define('SYNC_LOG_ENABLED', true);
+
+// Database connection (Admin DB)
 try {
     $pdo = new PDO(
         "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
@@ -26,46 +41,52 @@ try {
     die("Database connection failed: " . $e->getMessage());
 }
 
-// URL Configuration - Hosting Ortamı için
+// URL Configuration
 define('MAIN_SITE_URL', 'https://www.ecedekor.com.tr');
 define('ADMIN_BASE_URL', 'https://admin.ecedekor.com.tr');
 define('BASE_URL', MAIN_SITE_URL);
 define('ADMIN_URL', ADMIN_BASE_URL);
 
-// Assets URLs - Ana sitedeki assets klasörünü kullan
+// Assets URLs
 define('ADMIN_ASSETS_URL', MAIN_SITE_URL . '/assets');
 define('MAIN_ASSETS_URL', MAIN_SITE_URL . '/assets');
 define('IMAGES_URL', MAIN_ASSETS_URL . '/images');
 
-// File upload paths - Ana sitedeki assets klasörüne yükle
+// File upload paths
 define('UPLOAD_DIR', $_SERVER['DOCUMENT_ROOT'] . '/../assets/images/');
 define('MAX_FILE_SIZE', 5 * 1024 * 1024); // 5MB
 define('ALLOWED_EXTENSIONS', ['jpg', 'jpeg', 'png', 'gif', 'webp']);
 
-// Security settings
-define('ADMIN_SESSION_NAME', 'ecedekor_admin');
-session_name(ADMIN_SESSION_NAME);
+// Session ayarları - SADECE session başlatılmadan önce
+if (session_status() === PHP_SESSION_NONE) {
+    // Session ayarlarını güvenli şekilde ayarla
+    if (!headers_sent()) {
+        session_name('ecedekor_admin');
+        
+        // Sadece HTTPS üzerindeyse secure session kullan
+        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+            ini_set('session.cookie_secure', '1');
+        }
+        ini_set('session.cookie_httponly', '1');
+        ini_set('session.cookie_samesite', 'Strict');
+    }
+    
+    session_start();
+}
 
-// Admin subdomain güvenlik kontrolü - Hosting Ortamı
-$isValidAdminDomain = strpos($_SERVER['HTTP_HOST'], 'admin.ecedekor.com.tr') !== false;
+// Admin subdomain güvenlik kontrolü
+$isValidAdminDomain = strpos($_SERVER['HTTP_HOST'] ?? '', 'admin.ecedekor.com.tr') !== false;
 
-if (!isset($_SERVER['HTTP_HOST']) || !$isValidAdminDomain) {
+if (!$isValidAdminDomain) {
     // Eğer admin subdomain'i değilse ve login sayfası değilse yönlendir
-    if (!in_array(basename($_SERVER['PHP_SELF']), ['login.php', 'index.php'])) {
+    $currentPage = basename($_SERVER['PHP_SELF'] ?? '');
+    if (!in_array($currentPage, ['login.php', 'index.php'])) {
         header('Location: ' . ADMIN_BASE_URL . '/login.php');
         exit;
     }
 }
 
-if (session_status() === PHP_SESSION_NONE) {
-    // Hosting ortamı için güvenli session ayarları
-    ini_set('session.cookie_secure', '1');
-    ini_set('session.cookie_httponly', '1');
-    ini_set('session.cookie_samesite', 'Strict');
-    session_start();
-}
-
-// Database helper functions (aynı kalır)
+// Database helper functions
 function query($sql, $params = []) {
     global $pdo;
     try {
@@ -91,6 +112,48 @@ function fetchAll($sql, $params = []) {
 function getLastInsertId() {
     global $pdo;
     return $pdo->lastInsertId();
+}
+
+// Teklif DB Bağlantısı
+function getTeklifDbConnection() {
+    try {
+        $pdo = new PDO(
+            "mysql:host=" . TEKLIF_DB_HOST . ";dbname=" . TEKLIF_DB_NAME . ";charset=utf8mb4",
+            TEKLIF_DB_USERNAME,
+            TEKLIF_DB_PASSWORD,
+            [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES => false,
+            ]
+        );
+        return $pdo;
+    } catch(PDOException $e) {
+        throw new Exception("Teklif DB bağlantı hatası: " . $e->getMessage());
+    }
+}
+
+// Teklif DB için Query Helper Fonksiyonları
+function teklifQuery($sql, $params = []) {
+    try {
+        $teklifDb = getTeklifDbConnection();
+        $stmt = $teklifDb->prepare($sql);
+        $stmt->execute($params);
+        return $stmt;
+    } catch (PDOException $e) {
+        error_log("Teklif DB query error: " . $e->getMessage());
+        return false;
+    }
+}
+
+function teklifFetchOne($sql, $params = []) {
+    $stmt = teklifQuery($sql, $params);
+    return $stmt ? $stmt->fetch() : null;
+}
+
+function teklifFetchAll($sql, $params = []) {
+    $stmt = teklifQuery($sql, $params);
+    return $stmt ? $stmt->fetchAll() : [];
 }
 
 function getSetting($key, $default = '') {
@@ -126,25 +189,35 @@ function verifyCSRFToken($token) {
     return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
 }
 
-// File upload helper - Ana site klasörüne yükle
+// Utility functions
+function sanitizeInput($input) {
+    if ($input === null) {
+        return '';
+    }
+    return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
+}
+
+function generateSlug($string) {
+    if ($string === null) {
+        return '';
+    }
+    $string = mb_strtolower($string, 'UTF-8');
+    $string = preg_replace('/[^a-z0-9\s-]/', '', $string);
+    $string = preg_replace('/[\s-]+/', '-', $string);
+    return trim($string, '-');
+}
+
+// File upload helper
 function uploadFile($file, $directory = 'uploads') {
     if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
-        error_log('Upload error: ' . ($file['error'] ?? 'File not set'));
         return false;
     }
     
-    // Ana sitenin assets klasörüne yükle
     $uploadDir = UPLOAD_DIR . $directory . '/';
     if (!is_dir($uploadDir)) {
         if (!mkdir($uploadDir, 0755, true)) {
-            error_log('Could not create upload directory: ' . $uploadDir);
             return false;
         }
-    }
-    
-    if (!is_writable($uploadDir)) {
-        error_log('Upload directory is not writable: ' . $uploadDir);
-        return false;
     }
     
     $fileName = $file['name'];
@@ -153,12 +226,10 @@ function uploadFile($file, $directory = 'uploads') {
     $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     
     if ($fileSize > MAX_FILE_SIZE) {
-        error_log('File too large: ' . $fileSize . ' bytes');
         return false;
     }
     
     if (!in_array($fileExt, ALLOWED_EXTENSIONS)) {
-        error_log('Invalid file extension: ' . $fileExt);
         return false;
     }
     
@@ -167,26 +238,10 @@ function uploadFile($file, $directory = 'uploads') {
     
     if (move_uploaded_file($fileTmp, $uploadPath)) {
         chmod($uploadPath, 0644);
-        // Ana site URL'i ile döndür
-        $fileUrl = MAIN_SITE_URL . '/assets/images/' . $directory . '/' . $newFileName;
-        error_log('File uploaded successfully: ' . $fileUrl);
-        return $fileUrl;
-    } else {
-        error_log('Failed to move uploaded file from ' . $fileTmp . ' to ' . $uploadPath);
-        return false;
+        return MAIN_SITE_URL . '/assets/images/' . $directory . '/' . $newFileName;
     }
-}
-
-// Utility functions
-function sanitizeInput($input) {
-    return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
-}
-
-function generateSlug($string) {
-    $string = mb_strtolower($string, 'UTF-8');
-    $string = preg_replace('/[^a-z0-9\s-]/', '', $string);
-    $string = preg_replace('/[\s-]+/', '-', $string);
-    return trim($string, '-');
+    
+    return false;
 }
 
 // User management functions
@@ -263,7 +318,52 @@ function getAvailablePermissions() {
         'files_manage' => 'Dosya Yönetimi',
         'users_manage' => 'Kullanıcı Yönetimi',
         'users_create' => 'Kullanıcı Oluşturma',
-        'reports_view' => 'Rapor Görüntüleme'
+        'reports_view' => 'Rapor Görüntüleme',
+        'sync_manage' => 'Senkronizasyon Yönetimi'
     ];
 }
+
+// Senkronizasyon fonksiyonları
+function checkSyncStatus($variantId) {
+    try {
+        $teklifDb = getTeklifDbConnection();
+        $stmt = $teklifDb->prepare("SELECT COUNT(*) FROM products WHERE admin_variant_id = ?");
+        $stmt->execute([$variantId]);
+        return $stmt->fetchColumn() > 0;
+    } catch (Exception $e) {
+        error_log("Senkronizasyon durumu kontrolü hatası: " . $e->getMessage());
+        return false;
+    }
+}
+
+function logSync($variantId, $action, $status, $message = '') {
+    if (!SYNC_LOG_ENABLED) return true;
+    
+    try {
+        return query("INSERT INTO sync_logs (admin_variant_id, sync_type, status, message, created_at) VALUES (?, ?, ?, ?, NOW())", 
+                    [$variantId, $action, $status, $message]);
+    } catch (Exception $e) {
+        error_log("Sync log error: " . $e->getMessage());
+        return false;
+    }
+}
+
+function testCrossDbConnection() {
+    try {
+        $adminCount = fetchOne("SELECT COUNT(*) as count FROM product_variants");
+        $teklifCount = teklifFetchOne("SELECT COUNT(*) as count FROM products");
+        
+        return [
+            'success' => true,
+            'admin_variants' => $adminCount['count'] ?? 0,
+            'teklif_products' => $teklifCount['count'] ?? 0
+        ];
+    } catch (Exception $e) {
+        return [
+            'success' => false,
+            'error' => $e->getMessage()
+        ];
+    }
+}
+
 ?>

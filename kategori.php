@@ -2,7 +2,6 @@
 require_once 'includes/config.php';
 
 // URL'den kategori slug'ını al
-// (Bir önceki yanıttaki daha sağlamlaştırılmış slug alma mantığını kullanıyoruz)
 $requestUriPath = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 $basePathConfig = trim(parse_url(BASE_URL, PHP_URL_PATH), '/');
 
@@ -22,7 +21,6 @@ if (preg_match('/^kategori\/([a-zA-Z0-9-]+)\/?$/', $relevantPath, $matches)) {
 }
 
 if (empty($categorySlug)) {
-    // error_log("Kategori slug'ı alınamadı. Request URI: {$_SERVER['REQUEST_URI']}, Relevant Path: {$relevantPath}");
     header('Location: ' . BASE_URL . '/urunler.php');
     exit;
 }
@@ -31,12 +29,10 @@ if (empty($categorySlug)) {
 $category = fetchOne("SELECT * FROM categories WHERE slug = ? AND is_active = 1", [$categorySlug]);
 
 if (!$category) {
-    // error_log("Kategori bulunamadı. Slug: {$categorySlug}");
     header('Location: ' . BASE_URL . '/404.php');
     exit;
 }
 
-// SAYFA BAŞLIĞI VE AÇIKLAMASI DOĞRU $category DEĞİŞKENİ İLE AYARLANIYOR
 $pageTitle = $category['name'];
 $pageDescription = $category['description'] ?: 'Kaliteli ' . $category['name'] . ' ürünlerini keşfedin.';
 
@@ -50,13 +46,13 @@ $products = fetchAll("
     ORDER BY p.sort_order, p.name
 ", [$category['id']]);
 
-// Ürün varyantları için bilgi çek
+// Ürün varyantları için bilgi çek - urunler.php'deki gibi LIMIT 5 ile
 $productVariants = [];
 foreach ($products as $product) {
     $productVariants[$product['id']] = fetchAll("
-        SELECT id, name, color, color_code, size, weight, sku, price FROM product_variants 
-        WHERE product_id = ? AND is_active = 1 
-        ORDER BY sort_order, name
+        SELECT id, name, color, color_code FROM product_variants 
+        WHERE product_id = ? AND is_active = 1 AND color_code IS NOT NULL 
+        ORDER BY sort_order, name LIMIT 5
     ", [$product['id']]);
 }
 
@@ -94,11 +90,9 @@ $totalItems = count($products) + $totalVariants;
 
 $otherCategories = fetchAll("SELECT * FROM categories WHERE id != ? AND is_active = 1 ORDER BY sort_order", [$category['id']]);
 
-// ---- ÖNEMLİ DÜZELTME ----
 // Mevcut kategori bilgilerini, includes/header.php tarafından olası bir üzerine yazılma ihtimaline karşı
 // farklı bir değişkende saklayalım. Sayfanın gövdesinde bu değişkeni kullanacağız.
 $displayCategory = $category;
-// ---- ÖNEMLİ DÜZELTME SONU ----
 
 include 'includes/header.php'; // Bu dosya global $category değişkenini değiştirebilir
 ?>
@@ -106,8 +100,7 @@ include 'includes/header.php'; // Bu dosya global $category değişkenini deği�
 <!-- Category Header -->
 <section class="relative py-24 bg-gradient-to-r from-red-600 to-black overflow-hidden">
     <div class="absolute inset-0 bg-black opacity-20"></div>
-    <?php if (!empty($displayCategory['image'])): // $displayCategory kullanılıyor 
-    ?>
+    <?php if (!empty($displayCategory['image'])): ?>
         <div class="absolute inset-0 parallax" style="background-image: url('<?php echo htmlspecialchars($displayCategory['image']); ?>');"></div>
         <div class="absolute inset-0 bg-gradient-to-r from-red-600 to-black opacity-80"></div>
     <?php endif; ?>
@@ -119,12 +112,10 @@ include 'includes/header.php'; // Bu dosya global $category değişkenini deği�
             </div>
 
             <h1 class="text-4xl md:text-6xl font-bold mb-6 text-shadow">
-                <?php echo htmlspecialchars($displayCategory['name']); // $displayCategory kullanılıyor 
-                ?>
+                <?php echo htmlspecialchars($displayCategory['name']); ?>
             </h1>
 
-            <?php if (!empty($displayCategory['description'])): // $displayCategory kullanılıyor 
-            ?>
+            <?php if (!empty($displayCategory['description'])): ?>
                 <p class="text-xl md:text-2xl mb-8 max-w-4xl mx-auto text-shadow opacity-90">
                     <?php echo htmlspecialchars($displayCategory['description']); ?>
                 </p>
@@ -151,8 +142,7 @@ include 'includes/header.php'; // Bu dosya global $category değişkenini deği�
                     <li><i class="fas fa-chevron-right mx-2 text-xs"></i></li>
                     <li><a href="<?php echo BASE_URL; ?>/urunler.php" class="hover:text-gray-200">Ürünler</a></li>
                     <li><i class="fas fa-chevron-right mx-2 text-xs"></i></li>
-                    <li class="text-gray-200"><?php echo htmlspecialchars($displayCategory['name']); // $displayCategory kullanılıyor 
-                                                ?></li>
+                    <li class="text-gray-200"><?php echo htmlspecialchars($displayCategory['name']); ?></li>
                 </ol>
             </nav>
         </div>
@@ -179,8 +169,7 @@ include 'includes/header.php'; // Bu dosya global $category değişkenini deği�
             <!-- Category Products Header -->
             <div class="text-center mb-12 animate-on-scroll">
                 <h2 class="text-3xl font-bold text-black mb-4">
-                    <?php echo htmlspecialchars($displayCategory['name']); // $displayCategory kullanılıyor 
-                    ?> Ürünleri
+                    <?php echo htmlspecialchars($displayCategory['name']); ?> Ürünleri
                 </h2>
                 <p class="text-gray-600 max-w-3xl mx-auto">
                     Bu kategoride <?php echo count($products); ?> ürün ve <?php echo count($allVariants); ?> varyant bulundu. İhtiyaçlarınıza en uygun olanı seçin.
@@ -233,22 +222,22 @@ include 'includes/header.php'; // Bu dosya global $category değişkenini deği�
                                 <?php echo htmlspecialchars($product['short_description']); ?>
                             </p>
 
-                            <!-- Product Variants Colors -->
+                            <!-- Product Variants Colors - urunler.php'deki gibi güncellenmiş -->
                             <?php if (!empty($productVariants[$product['id']])): ?>
                                 <div class="mb-4">
                                     <div class="flex items-center space-x-2">
                                         <span class="text-xs text-gray-600">Renkler:</span>
                                         <div class="flex space-x-1">
                                             <?php foreach ($productVariants[$product['id']] as $variant): ?>
-                                                <div class="w-4 h-4 rounded-full border border-gray-300"
-                                                    style="background-color: <?php echo $variant['color_code']; ?>;"
-                                                    title="<?php echo htmlspecialchars($variant['color']); ?>"></div>
+                                                <div class="w-4 h-4 rounded-full border border-gray-300" 
+                                                     style="background-color: <?php echo $variant['color_code']; ?>;" 
+                                                     title="<?php echo htmlspecialchars($variant['color']); ?>"></div>
                                             <?php endforeach; ?>
-                                            <?php
+                                            <?php 
                                             $totalVariants = fetchOne("SELECT COUNT(*) as count FROM product_variants WHERE product_id = ? AND is_active = 1", [$product['id']]);
-                                            if ($totalVariants['count'] > 4):
+                                            if ($totalVariants['count'] > 5): 
                                             ?>
-                                                <span class="text-xs text-gray-500">+<?php echo $totalVariants['count'] - 4; ?></span>
+                                                <span class="text-xs text-gray-500">+<?php echo $totalVariants['count'] - 5; ?></span>
                                             <?php endif; ?>
                                         </div>
                                     </div>
@@ -278,6 +267,21 @@ include 'includes/header.php'; // Bu dosya global $category değişkenini deği�
                                                 +<?php echo count($features) - 2; ?> özellik
                                             </span>
                                         <?php endif; ?>
+                                    </div>
+                                </div>
+
+                                <!-- Güvenlik Rozetleri -->
+                                <div class="mb-4">
+                                    <div class="flex flex-wrap gap-1">
+                                        <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                                            <i class="fas fa-shield-alt mr-1"></i>Çocuk Güvenli
+                                        </span>
+                                        <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                                            <i class="fas fa-paw mr-1"></i>Evcil Hayvan Dostu
+                                        </span>
+                                        <span class="inline-block bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">
+                                            <i class="fas fa-leaf mr-1"></i>Alerjen İçermez
+                                        </span>
                                     </div>
                                 </div>
                             <?php endif; ?>
@@ -340,15 +344,6 @@ include 'includes/header.php'; // Bu dosya global $category değişkenini deği�
                                     </span>
                                 </div>
                             <?php endif; ?>
-
-                            <!-- Price Badge -->
-                            <!-- <?php if (!empty($variant['price'])): ?>
-                                <div class="absolute top-4 left-4">
-                                    <span class="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                                        ₺<?php echo number_format($variant['price'], 2); ?>
-                                    </span>
-                                </div>
-                            <?php endif; ?> -->
 
                             <!-- Overlay on hover -->
                             <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
@@ -479,8 +474,7 @@ include 'includes/header.php'; // Bu dosya global $category değişkenini deği�
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
         <div class="animate-on-scroll">
             <h2 class="text-3xl md:text-4xl font-bold mb-6">
-                <?php echo htmlspecialchars($displayCategory['name']); // $displayCategory kullanılıyor 
-                ?> Hakkında Sorularınız mı Var?
+                <?php echo htmlspecialchars($displayCategory['name']); ?> Hakkında Sorularınız mı Var?
             </h2>
             <p class="text-xl md:text-2xl mb-10 opacity-90 max-w-3xl mx-auto">
                 Ürünlerimiz veya hizmetlerimiz hakkında daha fazla bilgi almak, özel bir proje için teklif istemek ya da sadece merhaba demek için bize ulaşın. Uzman ekibimiz size yardımcı olmaktan mutluluk duyacaktır.

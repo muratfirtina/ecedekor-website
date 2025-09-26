@@ -181,7 +181,7 @@ INSERT INTO `product_variants` (`product_id`, `name`, `color`, `weight`, `sku`) 
 -- Homepage sections
 INSERT INTO `homepage_sections` (`section_type`, `title`, `subtitle`, `content`, `button_text`, `button_link`, `sort_order`) VALUES
 ('hero', 'Ahşap Tamir ve Dolgu Malzemelerinde Uzman', 'ECEDEKOR ile Kaliteli Çözümler', '1998 yılından bu yana mobilya sektöründe kullanılmak üzere dolgu macunu, pvc tapa ve keçe üretimi yapmaktayız. Kalite ve müşteri memnuniyeti odaklı hizmet anlayışımızla sektöre öncülük ediyoruz.', 'Ürünlerimizi İnceleyin', '/urunler', 1),
-('about', 'Hakkımızda', '25 Yıllık Deneyim', 'ECEDEKOR, 1998 yılından bu yana mobilya sektöründe kullanılmak üzere dolgu macunu, pvc tapa ve keçe üretimi yapmaktadır. Kuruluşundan itibaren sadece yurt içi değil yurt dışındaki müşterilerine de hizmet vermektedir.', 'Daha Fazla Bilgi', '/hakkimizda', 2);
+('about', 'Hakkımızda', '27+ Yıllık Deneyim', 'ECEDEKOR, 1998 yılından bu yana mobilya sektöründe kullanılmak üzere dolgu macunu, pvc tapa ve keçe üretimi yapmaktadır. Kuruluşundan itibaren sadece yurt içi değil yurt dışındaki müşterilerine de hizmet vermektedir.', 'Daha Fazla Bilgi', '/hakkimizda', 2);
 
 -- Testimonials
 INSERT INTO `testimonials` (`name`, `company`, `content`, `rating`, `sort_order`) VALUES
@@ -192,7 +192,7 @@ INSERT INTO `testimonials` (`name`, `company`, `content`, `rating`, `sort_order`
 -- Site settings
 INSERT INTO `site_settings` (`setting_key`, `setting_value`, `setting_type`) VALUES
 ('site_title', 'ECEDEKOR - Ahşap Tamir ve Dolgu Malzemeleri', 'text'),
-('site_description', 'Ahşap tamir macunları, zemin koruyucu keçeler ve yapışkanlı tapalar konusunda 25 yıllık deneyimle hizmet veriyoruz.', 'textarea'),
+('site_description', 'Ahşap tamir macunları, zemin koruyucu keçeler ve yapışkanlı tapalar konusunda 27+ yıllık deneyimle hizmet veriyoruz.', 'textarea'),
 ('company_name', 'ECEDEKOR', 'text'),
 ('company_address', 'Cevizli Mah. Yeşil Sk. Şaman San. Sitesi No: 1/D Maltepe - İSTANBUL', 'textarea'),
 ('company_phone', '+90 216 371 91 77', 'text'),

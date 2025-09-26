@@ -67,7 +67,7 @@ include 'includes/header.php';
             <?php if ($selectedCategory): ?>
                 <?php echo htmlspecialchars($selectedCategory['description']); ?>
             <?php else: ?>
-                Ahşap tamir ve dolgu malzemelerinde 25 yıllık deneyimimizle ürettiğimiz kaliteli ürünler
+                Ahşap tamir ve dolgu malzemelerinde <div class="text-3xl font-bold"><?php echo (int)date('Y') - (int)getSetting('company_founded', 1998); ?>+</div> yıllık deneyimimizle ürettiğimiz kaliteli ürünler
             <?php endif; ?>
         </p>
         
@@ -238,6 +238,20 @@ include 'includes/header.php';
                                                 +<?php echo count($features) - 2; ?> özellik
                                             </span>
                                         <?php endif; ?>
+                                    </div>
+                                </div>
+                                <!-- Güvenlik Rozetleri -->
+                                <div class="mb-4">
+                                    <div class="flex flex-wrap gap-1">
+                                        <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                                            <i class="fas fa-shield-alt mr-1"></i>Çocuk Güvenli
+                                        </span>
+                                        <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                                            <i class="fas fa-paw mr-1"></i>Evcil Hayvan Dostu
+                                        </span>
+                                        <span class="inline-block bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">
+                                            <i class="fas fa-leaf mr-1"></i>Alerjen İçermez
+                                        </span>
                                     </div>
                                 </div>
                             <?php endif; ?>

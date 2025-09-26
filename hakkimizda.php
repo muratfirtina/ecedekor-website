@@ -1,10 +1,10 @@
 <?php
-require_once 'includes/config.php'; // Bu yolun doğru olduğundan emin olun
+require_once 'includes/config.php';
 
 $pageTitle = 'Hakkımızda';
 $pageDescription = getSetting('site_description', 'ECEDEKOR olarak 1998 yılından bu yana mobilya sektöründe kaliteli ürünler üretiyoruz. 25 yıllık deneyimimiz ve müşteri memnuniyeti odaklı hizmet anlayışımız.');
 
-include 'includes/header.php'; // Bu yolun doğru olduğundan emin olun
+include 'includes/header.php';
 ?>
 
 <!-- Hero Section -->
@@ -12,22 +12,21 @@ include 'includes/header.php'; // Bu yolun doğru olduğundan emin olun
     <div class="absolute inset-0 bg-black opacity-20"></div>
     <!-- Hero Background Image -->
     <div class="absolute inset-0 z-0">
-        <?php
-        $aboutHeroImage = getSetting('about_image');
-        $defaultAboutHeroImage = IMAGES_URL . '/default-hero-about.jpg'; // Varsayılan bir görsel belirleyin
-        $heroImageSrc = $aboutHeroImage ?: $defaultAboutHeroImage;
-        ?>
-        <img src="<?php echo htmlspecialchars($heroImageSrc); ?>" class="w-full h-full object-cover" alt="Hakkımızda ECEDEKOR" onerror="this.src='<?php echo htmlspecialchars($defaultAboutHeroImage); ?>'; this.classList.add('bg-gradient-to-r', 'from-red-600', 'to-black');">
-        <div class="absolute inset-0 bg-gradient-to-r from-red-600 to-black opacity-80"></div>
+        <?php if (getSetting('about_image')): ?>
+            <img src="<?php echo getSetting('about_image'); ?>" class="w-full h-full object-cover" alt="Hero Background">
+            <div class="absolute inset-0 bg-gradient-to-r from-red-600 to-black opacity-80"></div>
+        <?php else: ?>
+            <div class="w-full h-full bg-gradient-to-r from-red-600 to-black opacity-80"></div>
+        <?php endif; ?>
     </div>
-
+    
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
         <div class="animate-on-scroll">
             <h1 class="text-4xl md:text-6xl font-bold mb-6 text-shadow">Hakkımızda</h1>
             <p class="text-xl md:text-2xl mb-8 max-w-4xl mx-auto text-shadow opacity-90">
                 <?php echo (int)date('Y') - (int)getSetting('company_founded', 1998); ?> yıllık deneyimimizle ahşap tamir ve dolgu malzemelerinde güvenilir çözüm ortağınız.
             </p>
-
+            
             <!-- Breadcrumb -->
             <nav class="mt-8">
                 <ol class="flex items-center justify-center space-x-2 text-sm opacity-90">
@@ -48,7 +47,7 @@ include 'includes/header.php'; // Bu yolun doğru olduğundan emin olun
                 <div class="mb-6">
                     <span class="bg-red-100 text-red-800 text-sm font-semibold px-3 py-1 rounded-full">Hikayemiz</span>
                 </div>
-                <h2 class="text-4xl font-bold text-black mb-6">
+                <h2 class="text-4xl font-bold text-gray-600 mb-6">
                     <?php echo getSetting('company_founded', '1998'); ?> Yılından Bu Yana Kalite ve Güven
                 </h2>
                 <div class="space-y-4 text-gray-600 leading-relaxed">
@@ -67,7 +66,7 @@ include 'includes/header.php'; // Bu yolun doğru olduğundan emin olun
                         firmalardan biri olmayı başarmış ve bu konumunu sürdürmeye devam etmektedir.
                     </p>
                 </div>
-
+                
                 <div class="mt-8 flex flex-col sm:flex-row gap-4">
                     <a href="<?php echo BASE_URL; ?>/urunler.php"
                        class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition duration-300 font-semibold text-center">
@@ -79,7 +78,7 @@ include 'includes/header.php'; // Bu yolun doğru olduğundan emin olun
                     </a>
                 </div>
             </div>
-
+            
             <div class="animate-on-scroll">
                 <div class="relative">
                     <?php
@@ -114,48 +113,48 @@ include 'includes/header.php'; // Bu yolun doğru olduğundan emin olun
 <section class="py-20 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16 animate-on-scroll">
-            <h2 class="text-4xl font-bold text-black mb-4">Değerlerimiz</h2>
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Değerlerimiz</h2>
             <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                Başarımızın temelini oluşturan, bizi biz yapan değerlerimiz
+                Başarımızın temelini oluşturan değerlerimiz
             </p>
         </div>
-
+        
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div class="bg-white rounded-2xl p-8 card-shadow hover-scale animate-on-scroll text-center">
                 <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <i class="fas fa-award text-2xl text-red-600"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-black mb-4">Kalite</h3>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Kalite</h3>
                 <p class="text-gray-600">
                     ISO standartlarında üretim yaparak en yüksek kalite standartlarını garanti ediyoruz.
                 </p>
             </div>
-
+            
             <div class="bg-white rounded-2xl p-8 card-shadow hover-scale animate-on-scroll text-center">
                 <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <i class="fas fa-leaf text-2xl text-green-600"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-black mb-4">Çevre Dostu</h3>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Çevre Dostu</h3>
                 <p class="text-gray-600">
                     Sürdürülebilir üretim anlayışıyla çevre dostu ürünler geliştiriyoruz.
                 </p>
             </div>
-
+            
             <div class="bg-white rounded-2xl p-8 card-shadow hover-scale animate-on-scroll text-center">
                 <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <i class="fas fa-lightbulb text-2xl text-purple-600"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-black mb-4">İnovasyon</h3>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">İnovasyon</h3>
                 <p class="text-gray-600">
                     Sürekli araştırma geliştirme ile sektöre yenilikçi çözümler sunuyoruz.
                 </p>
             </div>
-
+            
             <div class="bg-white rounded-2xl p-8 card-shadow hover-scale animate-on-scroll text-center">
                 <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <i class="fas fa-handshake text-2xl text-orange-600"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-black mb-4">Güven</h3>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Güven</h3>
                 <p class="text-gray-600">
                     <?php echo (int)date('Y') - (int)getSetting('company_founded', 1998); ?> yıllık deneyimimizle müşterilerimizin güvenini kazandık ve koruyoruz.
                 </p>
@@ -171,7 +170,7 @@ include 'includes/header.php'; // Bu yolun doğru olduğundan emin olun
             <h2 class="text-4xl font-bold text-white mb-4">Rakamlarla <?php echo htmlspecialchars(getSetting('company_name', 'ECEDEKOR')); ?></h2>
             <p class="text-xl text-red-100">Başarımızı gösteren ve gurur duyduğumuz rakamlar</p>
         </div>
-
+        
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div class="text-center text-white animate-on-scroll">
                 <div class="text-4xl lg:text-5xl font-bold mb-2"><?php echo (int)date('Y') - (int)getSetting('company_founded', 1998); ?>+</div>
@@ -203,33 +202,33 @@ include 'includes/header.php'; // Bu yolun doğru olduğundan emin olun
                     <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
                         <i class="fas fa-bullseye text-2xl text-red-600"></i>
                     </div>
-                    <h3 class="text-3xl font-bold text-black">Misyonumuz</h3>
+                    <h3 class="text-3xl font-bold text-gray-900">Misyonumuz</h3>
                 </div>
                 <p class="text-gray-600 leading-relaxed mb-6">
-                    Mobilya sektöründe kullanılan ahşap tamir ve dolgu malzemelerinde en kaliteli
-                    ürünleri üretmek, müşterilerimizin ihtiyaçlarını en iyi şekilde karşılamak ve
+                    Mobilya sektöründe kullanılan ahşap tamir ve dolgu malzemelerinde en kaliteli 
+                    ürünleri üretmek, müşterilerimizin ihtiyaçlarını en iyi şekilde karşılamak ve 
                     sektöre değer katacak yenilikçi çözümler sunmaktır.
                 </p>
                 <p class="text-gray-600 leading-relaxed">
-                    Sürdürülebilir üretim anlayışı ile çevre dostu ürünler geliştirerek, gelecek
+                    Sürdürülebilir üretim anlayışı ile çevre dostu ürünler geliştirerek, gelecek 
                     nesillere daha yaşanabilir bir dünya bırakmayı hedefliyoruz.
                 </p>
             </div>
-
+            
             <!-- Vision -->
             <div class="animate-on-scroll">
                 <div class="mb-6">
                     <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4">
                         <i class="fas fa-eye text-2xl text-purple-600"></i>
                     </div>
-                    <h3 class="text-3xl font-bold text-black">Vizyonumuz</h3>
+                    <h3 class="text-3xl font-bold text-gray-900">Vizyonumuz</h3>
                 </div>
                 <p class="text-gray-600 leading-relaxed mb-6">
-                    Ahşap tamir ve dolgu malzemeleri sektöründe Türkiye'nin öncü firması olmak ve
+                    Ahşap tamir ve dolgu malzemeleri sektöründe Türkiye'nin öncü firması olmak ve 
                     uluslararası pazarlarda tanınan bir marka haline gelmektir.
                 </p>
                 <p class="text-gray-600 leading-relaxed">
-                    Sürekli araştırma geliştirme faaliyetleri ile sektöre yön veren, kalite ve
+                    Sürekli araştırma geliştirme faaliyetleri ile sektöre yön veren, kalite ve 
                     güvenilirlik konusunda referans alınan bir şirket olmayı amaçlıyoruz.
                 </p>
             </div>
@@ -241,91 +240,131 @@ include 'includes/header.php'; // Bu yolun doğru olduğundan emin olun
 <section class="py-20 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16 animate-on-scroll">
-            <h2 class="text-4xl font-bold text-black mb-4">Kalite ve Sertifikalar</h2>
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Kalite ve Sertifikalar</h2>
             <p class="text-xl text-gray-600 max-w-3xl mx-auto">
                 Kalite standartlarımızı ve sertifikalarımızı sürekli geliştiriyoruz
             </p>
         </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        
+        <div class="grid grid-cols-2 gap-16 items-center">
             <div class="animate-on-scroll">
-                <h3 class="text-2xl font-bold text-black mb-6">Kalite Kontrol Sürecimiz</h3>
-
+                <h3 class="text-2xl font-bold text-gray-900 mb-6">Kalite Kontrol Sürecimiz</h3>
+                
                 <div class="space-y-6">
                     <div class="flex items-start">
                         <div class="flex-shrink-0 w-8 h-8 bg-red-600 text-white rounded-full flex items-center justify-center font-semibold text-sm mr-4">
                             1
                         </div>
                         <div>
-                            <h4 class="font-semibold text-black mb-2">Hammadde Kontrolü</h4>
+                            <h4 class="font-semibold text-gray-900 mb-2">Hammadde Kontrolü</h4>
                             <p class="text-gray-600">Tüm hammaddeler laboratuvar ortamında test edilerek kalite standartları doğrulanır.</p>
                         </div>
                     </div>
-
+                    
                     <div class="flex items-start">
                         <div class="flex-shrink-0 w-8 h-8 bg-red-600 text-white rounded-full flex items-center justify-center font-semibold text-sm mr-4">
                             2
                         </div>
                         <div>
-                            <h4 class="font-semibold text-black mb-2">Üretim Süreci</h4>
+                            <h4 class="font-semibold text-gray-900 mb-2">Üretim Süreci</h4>
                             <p class="text-gray-600">Modern makine parkuru ve deneyimli personelimizle kontrollü üretim gerçekleştiriyoruz.</p>
                         </div>
                     </div>
-
+                    
+                </div>
+            </div>
+            <div class="animate-on-scroll">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6"></h3>
+                
+                <div class="space-y-6">
+                    
                     <div class="flex items-start">
                         <div class="flex-shrink-0 w-8 h-8 bg-red-600 text-white rounded-full flex items-center justify-center font-semibold text-sm mr-4">
                             3
                         </div>
                         <div>
-                            <h4 class="font-semibold text-black mb-2">Son Ürün Testi</h4>
-                            <p class="text-gray-600">Üretilen her parti ürün kalite testlerinden geçirilerek onaylanır.</p>
+                            <h4 class="font-semibold text-gray-900 mb-2">Son Ürün Testi</h4>
+                            <p class="text-gray-600">Üretilen her parti ürün kalite testlerinden geçirilerek kontrolörler tarafından onaylanır.</p>
                         </div>
                     </div>
-
+                    
                     <div class="flex items-start">
                         <div class="flex-shrink-0 w-8 h-8 bg-red-600 text-white rounded-full flex items-center justify-center font-semibold text-sm mr-4">
                             4
                         </div>
                         <div>
-                            <h4 class="font-semibold text-black mb-2">Müşteri Geri Bildirimi</h4>
+                            <h4 class="font-semibold text-gray-900 mb-2">Müşteri Geri Bildirimi</h4>
                             <p class="text-gray-600">Müşteri memnuniyeti anketleri ile sürekli iyileştirme sağlıyoruz.</p>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="animate-on-scroll">
+            
+            
+        </div>
+        <div class="animate-on-scroll pt-10" >
                 <div class="bg-white rounded-2xl p-8 card-shadow">
-                    <h3 class="text-xl font-bold text-black mb-6 text-center">Sertifikalarımız</h3>
-
-                    <div class="grid grid-cols-2 gap-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6 text-center">Sertifikalarımız</h3>
+                    
+                    <div class="grid grid-cols-5 gap-6">
                         <div class="text-center p-4 border border-gray-200 rounded-lg">
-                            <i class="fas fa-certificate text-3xl text-red-600 mb-3"></i>
-                            <div class="font-semibold text-black">ISO 9001</div>
+                            <img src="<?php echo IMAGES_URL; ?>/certificates/iso-9001.png" alt="ISO 9001" class="w-16 h-16 mx-auto mb-3">
+                            <div class="font-semibold text-gray-900">ISO 9001</div>
                             <div class="text-sm text-gray-600">Kalite Yönetimi</div>
                         </div>
-
+                        
                         <div class="text-center p-4 border border-gray-200 rounded-lg">
-                            <i class="fas fa-leaf text-3xl text-green-600 mb-3"></i>
-                            <div class="font-semibold text-black">ISO 14001</div>
+                            <img src="<?php echo IMAGES_URL; ?>/certificates/iso-14001.png" alt="ISO 14001" class="w-16 h-16 mx-auto mb-3">
+                            <div class="font-semibold text-gray-900">ISO 14001</div>
                             <div class="text-sm text-gray-600">Çevre Yönetimi</div>
                         </div>
 
                         <div class="text-center p-4 border border-gray-200 rounded-lg">
-                            <i class="fas fa-shield-alt text-3xl text-purple-600 mb-3"></i>
-                            <div class="font-semibold text-black">CE Belgesi</div>
+                            <img src="<?php echo IMAGES_URL; ?>/certificates/iso-45001.png" alt="ISO 45001" class="w-16 h-16 mx-auto mb-3">
+                            <div class="font-semibold text-gray-900">ISO 45001</div>
+                            <div class="text-sm text-gray-600">İş Sağlığı ve Güvenliği Yönetimi</div>
+                        </div>
+                        
+                        <div class="text-center p-4 border border-gray-200 rounded-lg">
+                            <img src="<?php echo IMAGES_URL; ?>/certificates/ce-mark.png" alt="CE Belgesi" class="w-16 h-16 mx-auto mb-3">
+                            <div class="font-semibold text-gray-900">CE Belgesi</div>
                             <div class="text-sm text-gray-600">Avrupa Uygunluk</div>
                         </div>
-
+                        
                         <div class="text-center p-4 border border-gray-200 rounded-lg">
-                            <i class="fas fa-check-circle text-3xl text-orange-600 mb-3"></i>
-                            <div class="font-semibold text-black">TSE Belgesi</div>
-                            <div class="text-sm text-gray-600">Türk Standartları</div>
+                            <img src="<?php echo IMAGES_URL; ?>/certificates/vegan-friendly.png" alt="Vegan Friendly" class="w-16 h-16 mx-auto mb-3">
+                            <div class="font-semibold text-gray-900">Vegan Friendly</div>
+                            <div class="text-sm text-gray-600">Hayvan Dostu Üretim</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Güvenlik Bilgileri -->
+                    <div class="mt-8 bg-green-50 border border-green-200 rounded-lg p-6">
+                        <h4 class="text-lg font-semibold text-green-800 mb-4 flex items-center">
+                            <i class="fas fa-shield-alt mr-2"></i>
+                            Güvenlik ve Sağlık Garantisi
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h5 class="font-semibold text-green-700 mb-2">Aile Dostu Üretim</h5>
+                                <ul class="space-y-1 text-sm text-green-600">
+                                    <li class="flex items-center"><i class="fas fa-check mr-2"></i>Çocuklar için güvenli</li>
+                                    <li class="flex items-center"><i class="fas fa-check mr-2"></i>Evcil hayvanlar için zararsız</li>
+                                    <li class="flex items-center"><i class="fas fa-check mr-2"></i>Alerjen madde içermez</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-green-700 mb-2">Kalite Standartları</h5>
+                                <ul class="space-y-1 text-sm text-green-600">
+                                    <li class="flex items-center"><i class="fas fa-check mr-2"></i>Vegan formülasyon</li>
+                                    <li class="flex items-center"><i class="fas fa-check mr-2"></i>Çevre dostu üretim</li>
+                                    <li class="flex items-center"><i class="fas fa-check mr-2"></i>Uluslararası standartlarda</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
     </div>
 </section>
 
@@ -333,18 +372,18 @@ include 'includes/header.php'; // Bu yolun doğru olduğundan emin olun
 <section class="py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16 animate-on-scroll">
-            <h2 class="text-4xl font-bold text-black mb-4">Ekibimiz</h2>
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Ekibimiz</h2>
             <p class="text-xl text-gray-600 max-w-3xl mx-auto">
                 Deneyimli ve uzman kadromuzla size en iyi hizmeti sunuyoruz
             </p>
         </div>
-
+        
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
             <div class="text-center animate-on-scroll">
                 <div class="w-32 h-32 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <i class="fas fa-user-tie text-4xl text-red-600"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-black mb-2">Yönetim Ekibi</h3>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Yönetim Ekibi</h3>
                 <p class="text-gray-600 mb-4">
                     Sektörde <?php echo (int)date('Y') - (int)getSetting('company_founded', 1998); ?>+ yıl deneyime sahip yönetim kadromuz ile şirketi geleceğe taşıyoruz.
                 </p>
@@ -352,12 +391,12 @@ include 'includes/header.php'; // Bu yolun doğru olduğundan emin olun
                     <i class="fas fa-users mr-2"></i>5 Kişi
                 </div>
             </div>
-
+            
             <div class="text-center animate-on-scroll">
                 <div class="w-32 h-32 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <i class="fas fa-cogs text-4xl text-green-600"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-black mb-2">Üretim Ekibi</h3>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Üretim Ekibi</h3>
                 <p class="text-gray-600 mb-4">
                     Kalifiye üretim personelimiz ile kaliteli ürünleri zamanında üretiyoruz.
                 </p>
@@ -365,12 +404,12 @@ include 'includes/header.php'; // Bu yolun doğru olduğundan emin olun
                     <i class="fas fa-users mr-2"></i>15 Kişi
                 </div>
             </div>
-
+            
             <div class="text-center animate-on-scroll">
                 <div class="w-32 h-32 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <i class="fas fa-flask text-4xl text-purple-600"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-black mb-2">Ar-Ge Ekibi</h3>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Ar-Ge Ekibi</h3>
                 <p class="text-gray-600 mb-4">
                     Araştırma geliştirme ekibimiz ile sürekli yenilik ve iyileştirme yapıyoruz.
                 </p>
@@ -404,4 +443,4 @@ include 'includes/header.php'; // Bu yolun doğru olduğundan emin olun
     </div>
 </section>
 
-<?php include 'includes/footer.php'; // Bu yolun doğru olduğundan emin olun ?>
+<?php include 'includes/footer.php'; ?>

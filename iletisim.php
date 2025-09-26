@@ -427,14 +427,13 @@ include 'includes/header.php';
         </div>
         <div class="bg-gray-200 rounded-2xl overflow-hidden shadow-lg">
             <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3016.973498307391!2d29.15800041538919!3d40.91982297930997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cac4f6d3ffffff%3A0xc1a0301e1f98686d!2sEcedekor%20Ah%C5%9Fap%20Tamir%20ve%20Dolgu%20Malzemeleri!5e0!3m2!1str!2str!4v1672000000001!5m2!1str!2str"
-                width="100%"
-                height="450"
-                style="border:0;"
-                allowfullscreen=""
-                loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"
-                title="<?php echo htmlspecialchars(getSetting('company_name')); ?> Konumu">
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3014.811249990341!2d29.15755877669217!3d40.91988427136317!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cac56b492b8369%3A0xba0c02063ba5ef01!2zRWNlZGVrb3IgLSBIYXphciBEZcSfZXJsaSBUYcWfbGFyIHZlIMSwbsWfLiBMdGQuIMWfdGku!5e0!3m2!1str!2str!4v1748906296994!5m2!1str!2str" 
+                width="100%" 
+                height="450" 
+                style="border:0;" 
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade">
             </iframe>
         </div>
     </div>
