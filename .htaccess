@@ -96,20 +96,13 @@ ErrorDocument 404 /404.php
 ErrorDocument 500 /500.php
 
 # File Upload Security
-<FilesMatch "\.(php|php3|php4|php5|phtml|pl|py|jsp|asp|sh|cgi)$">
+# Allow all PHP files (security is managed at application level)
+# Only sensitive directories are protected below
+
+# Protect config and includes
+<FilesMatch "^(config|database)\.php$">
     Order Allow,Deny
     Deny from all
-</FilesMatch>
-
-<FilesMatch "^(index|kategori|urun|urun-varyant|hakkimizda|iletisim|urunler|blog|blog-detay|blog-ara|404)\.php$">
-    Order Allow,Deny
-    Allow from all
-</FilesMatch>
-
-# Admin Files Allow
-<FilesMatch "admin/">
-    Order Allow,Deny
-    Allow from all
 </FilesMatch>
 
 # Prevent Hotlinking
