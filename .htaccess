@@ -101,7 +101,7 @@ ErrorDocument 500 /500.php
     Deny from all
 </FilesMatch>
 
-<FilesMatch "^(index|kategori|urun|urun-varyant|hakkimizda|iletisim|urunler|blog|blog-detay|blog-ara|404)\.php$">
+<FilesMatch "^(index|kategori|urun|urun-varyant|hakkimizda|iletisim|urunler|blog|blog-detay|blog-ara|renk-kartelasi|404)\.php$">
     Order Allow,Deny
     Allow from all
 </FilesMatch>
