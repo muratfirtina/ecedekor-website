@@ -27,10 +27,14 @@ foreach ($selectedCategories as $category) {
     $products = fetchAll("
         SELECT p.*,
                (SELECT pv.image FROM product_variants pv
-                WHERE pv.product_id = p.id AND pv.image IS NOT NULL
+                WHERE pv.product_id = p.id AND pv.image IS NOT NULL AND pv.image != ''
                 ORDER BY pv.sort_order LIMIT 1) as variant_image
         FROM products p
         WHERE p.category_id = ? AND p.is_active = 1
+          AND (p.image IS NOT NULL AND p.image != ''
+               OR EXISTS(SELECT 1 FROM product_variants pv2
+                        WHERE pv2.product_id = p.id
+                        AND pv2.image IS NOT NULL AND pv2.image != ''))
         ORDER BY p.sort_order, p.name
         LIMIT 8
     ", [$categoryId]);
@@ -164,12 +168,12 @@ include 'includes/header.php';
                                 <?php foreach ($data['colors'] as $color): ?>
                                     <div class="group relative bg-gray-50 rounded-xl p-4 hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-red-300">
                                         <!-- Renk Kutusu -->
-                                        <div class="aspect-square rounded-lg mb-3 shadow-md border-2 border-gray-200 group-hover:scale-105 transition-transform relative overflow-hidden"
-                                             style="background-color: <?php echo htmlspecialchars($color['color_code']); ?>;">
-                                            <!-- Beyaz renkler için pattern -->
-                                            <?php if (strtolower($color['color_code']) === '#ffffff' || strtolower($color['color_code']) === '#fff'): ?>
-                                                <div class="absolute inset-0" style="background-image: linear-gradient(45deg, #f0f0f0 25%, transparent 25%, transparent 75%, #f0f0f0 75%, #f0f0f0), linear-gradient(45deg, #f0f0f0 25%, transparent 25%, transparent 75%, #f0f0f0 75%, #f0f0f0); background-size: 10px 10px; background-position: 0 0, 5px 5px;"></div>
-                                            <?php endif; ?>
+                                        <?php
+                                        $colorCode = strtolower(trim($color['color_code']));
+                                        $isWhite = ($colorCode === '#ffffff' || $colorCode === '#fff' || $colorCode === 'white' || $colorCode === '#fefefe' || $colorCode === '#f9f9f9');
+                                        ?>
+                                        <div class="aspect-square rounded-lg mb-3 shadow-md border-2 <?php echo $isWhite ? 'border-gray-300' : 'border-gray-200'; ?> group-hover:scale-105 transition-transform relative overflow-hidden"
+                                             style="background: <?php echo $isWhite ? 'repeating-conic-gradient(#f0f0f0 0% 25%, white 0% 50%) 50% / 20px 20px' : htmlspecialchars($color['color_code']); ?>;">
 
                                             <!-- Renk Kodu Badge -->
                                             <div class="absolute bottom-1 right-1 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded-md font-mono">
