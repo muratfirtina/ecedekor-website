@@ -106,11 +106,7 @@ ErrorDocument 500 /500.php
     Allow from all
 </FilesMatch>
 
-# Admin Files Allow
-<FilesMatch "admin/">
-    Order Allow,Deny
-    Allow from all
-</FilesMatch>
+# Note: Admin PHP files are allowed via /admin/.htaccess
 
 # Prevent Hotlinking
 RewriteCond %{HTTP_REFERER} !^$
