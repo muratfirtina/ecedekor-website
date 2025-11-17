@@ -4,10 +4,10 @@
  */
 
 // Database credentials - HOSTING BİLGİLERİNİZLE DEĞİŞTİRİN
-define('DB_HOST', 'localhost'); // Genellikle localhost kalır
-define('DB_USERNAME', 'ecedekor_admin'); // cPanel'de oluşturduğunuz kullanıcı
-define('DB_PASSWORD', 'root'); // Veritabanı şifreniz
-define('DB_NAME', 'ecedekor_db'); // cPanel'de oluşturduğunuz veritabanı
+define('DB_HOST', 'localhost');
+define('DB_USERNAME', 'admin');
+define('DB_PASSWORD', 'root');
+define('DB_NAME', 'ece_db');
 
 // Database connection
 try {

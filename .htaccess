@@ -68,6 +68,11 @@ RewriteRule ^urun/([a-zA-Z0-9-]+)/?$ urun.php?slug=$1 [L,QSA]
 # Ürün varyant sayfaları: /urun-varyant/urun-slug/varyant-id
 RewriteRule ^urun-varyant/([a-zA-Z0-9-]+)/([0-9]+)/?$ urun-varyant.php?slug=$1&variant_id=$2 [L,QSA]
 
+# Blog sayfaları: /blog-detay/blog-slug
+RewriteRule ^blog-detay/([a-zA-Z0-9-]+)/?$ blog-detay.php?slug=$1 [L,QSA]
+RewriteRule ^blog-ara/?$ blog-ara.php [L,QSA]
+RewriteRule ^blog/?$ blog.php [L,QSA]
+
 # Ana sayfalar
 RewriteRule ^hakkimizda/?$ hakkimizda.php [L,QSA]
 RewriteRule ^iletisim/?$ iletisim.php [L,QSA]
@@ -96,7 +101,7 @@ ErrorDocument 500 /500.php
     Deny from all
 </FilesMatch>
 
-<FilesMatch "^(index|kategori|urun|urun-varyant|hakkimizda|iletisim|urunler|404)\.php$">
+<FilesMatch "^(index|kategori|urun|urun-varyant|hakkimizda|iletisim|urunler|blog|blog-detay|blog-ara|404)\.php$">
     Order Allow,Deny
     Allow from all
 </FilesMatch>

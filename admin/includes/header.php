@@ -14,7 +14,13 @@ $unreadMessagesCount = fetchOne("SELECT COUNT(*) as count FROM contact_messages 
     <title><?php echo isset($pageTitle) ? htmlspecialchars($pageTitle) . ' - ' : ''; ?>Admin Panel - <?php echo htmlspecialchars(getSetting('company_name', 'ECEDEKOR')); ?></title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> {/* Versiyonu güncel tutun */}
+    
+    <?php if (isset($useQuillEditor) && $useQuillEditor): ?>
+    <!-- Quill CSS - Tailwind'den sonra yükle ki override edebilsin -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.min.css" rel="stylesheet">
+    <?php endif; ?>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         /* ... (mevcut stil tanımlamalarınız) ... */
@@ -40,6 +46,115 @@ $unreadMessagesCount = fetchOne("SELECT COUNT(*) as count FROM contact_messages 
             .sidebar.md\:translate-x-0 { transform: translateX(0) !important; }
         }
          [x-cloak] { display: none !important; }
+         
+        <?php if (isset($useQuillEditor) && $useQuillEditor): ?>
+        /* Quill Editor Özel Stilleri */
+        #editor-container {
+            height: 400px !important;
+            background: white !important;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif !important;
+        }
+        
+        .ql-toolbar.ql-snow {
+            background: #f8f9fa !important;
+            border: 1px solid #ccc !important;
+            border-bottom: none !important;
+            border-top-left-radius: 0.5rem !important;
+            border-top-right-radius: 0.5rem !important;
+            padding: 8px !important;
+        }
+        
+        .ql-container.ql-snow {
+            border: 1px solid #ccc !important;
+            border-bottom-left-radius: 0.5rem !important;
+            border-bottom-right-radius: 0.5rem !important;
+            font-size: 16px !important;
+            height: calc(100% - 42px) !important;
+        }
+        
+        .ql-editor {
+            min-height: 350px !important;
+            padding: 15px !important;
+            line-height: 1.6 !important;
+            font-family: Arial, sans-serif !important;
+            font-size: 14px !important;
+        }
+        
+        .ql-editor.ql-blank::before {
+            color: #9ca3af !important;
+            font-style: normal !important;
+            left: 15px !important;
+        }
+        
+        /* Toolbar butonları */
+        .ql-toolbar button {
+            width: 28px !important;
+            height: 28px !important;
+            padding: 3px 5px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        .ql-toolbar .ql-stroke {
+            stroke: #444 !important;
+            stroke-width: 2 !important;
+            stroke-linecap: round !important;
+            stroke-linejoin: round !important;
+        }
+        
+        .ql-toolbar .ql-fill {
+            fill: #444 !important;
+        }
+        
+        .ql-toolbar .ql-picker-label {
+            color: #444 !important;
+            font-size: 14px !important;
+            padding: 2px 5px !important;
+        }
+        
+        .ql-toolbar button:hover,
+        .ql-toolbar button:focus {
+            background: #e5e7eb !important;
+            border-radius: 3px !important;
+        }
+        
+        .ql-toolbar button.ql-active {
+            background: #dbeafe !important;
+            border-radius: 3px !important;
+        }
+        
+        .ql-toolbar button.ql-active .ql-stroke {
+            stroke: #06b !important;
+        }
+        
+        .ql-toolbar button.ql-active .ql-fill {
+            fill: #06b !important;
+        }
+        
+        /* SVG ikonları */
+        .ql-toolbar svg {
+            width: 18px !important;
+            height: 18px !important;
+            display: block !important;
+        }
+        
+        /* Picker stilleri */
+        .ql-toolbar .ql-picker {
+            font-size: 14px !important;
+            font-weight: 500 !important;
+            color: #444 !important;
+        }
+        
+        /* Tooltip z-index fix */
+        .ql-tooltip {
+            z-index: 1070 !important;
+        }
+        
+        .ql-editing {
+            z-index: 1070 !important;
+        }
+        <?php endif; ?>
     </style>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
@@ -95,6 +210,9 @@ $unreadMessagesCount = fetchOne("SELECT COUNT(*) as count FROM contact_messages 
                 </a>
                 <a href="<?php echo ADMIN_URL; ?>/testimonials.php" class="menu-item flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-md hover:bg-red-50 hover:text-red-700 <?php echo $currentPage === 'testimonials' ? 'active bg-red-50 text-red-700 border-l-4 border-red-600' : ''; ?>">
                     <i class="fas fa-comments w-5 mr-3"></i>Müşteri Yorumları
+                </a>
+                <a href="<?php echo ADMIN_URL; ?>/blogs.php" class="menu-item flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-md hover:bg-red-50 hover:text-red-700 <?php echo $currentPage === 'blogs' || $currentPage === 'blog-add' || $currentPage === 'blog-edit' ? 'active bg-red-50 text-red-700 border-l-4 border-red-600' : ''; ?>">
+                    <i class="fas fa-blog w-5 mr-3"></i>Blog Yönetimi
                 </a>
                 <a href="<?php echo ADMIN_URL; ?>/settings.php" class="menu-item flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-md hover:bg-red-50 hover:text-red-700 <?php echo $currentPage === 'settings' ? 'active bg-red-50 text-red-700 border-l-4 border-red-600' : ''; ?>">
                     <i class="fas fa-cog w-5 mr-3"></i>Site Ayarları

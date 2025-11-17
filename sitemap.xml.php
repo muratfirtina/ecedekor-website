@@ -67,4 +67,28 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
         <priority>0.6</priority>
     </url>
     <?php endforeach; ?>
+    
+    <!-- Blog Posts -->
+    <url>
+        <loc><?php echo BASE_URL; ?>/blog</loc>
+        <lastmod><?php echo date('Y-m-d'); ?></lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    
+    <?php
+    $blogs = fetchAll("
+        SELECT * FROM blogs 
+        WHERE status = 'published' 
+        ORDER BY published_at DESC
+    ");
+    foreach ($blogs as $blog):
+    ?>
+    <url>
+        <loc><?php echo BASE_URL; ?>/blog-detay/<?php echo $blog['slug']; ?></loc>
+        <lastmod><?php echo date('Y-m-d', strtotime($blog['updated_at'])); ?></lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <?php endforeach; ?>
 </urlset>
