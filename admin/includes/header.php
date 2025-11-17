@@ -205,6 +205,9 @@ $unreadMessagesCount = fetchOne("SELECT COUNT(*) as count FROM contact_messages 
                  <a href="<?php echo ADMIN_URL; ?>/variants.php" class="menu-item flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-md hover:bg-red-50 hover:text-red-700 <?php echo $currentPage === 'variants' ? 'active bg-red-50 text-red-700 border-l-4 border-red-600' : ''; ?>">
                     <i class="fas fa-palette w-5 mr-3"></i>Ürün Varyantları
                 </a>
+                <a href="<?php echo ADMIN_URL; ?>/color-palette.php" class="menu-item flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-md hover:bg-red-50 hover:text-red-700 <?php echo $currentPage === 'color-palette' ? 'active bg-red-50 text-red-700 border-l-4 border-red-600' : ''; ?>">
+                    <i class="fas fa-swatchbook w-5 mr-3"></i>Renk Kartelası
+                </a>
                 <a href="<?php echo ADMIN_URL; ?>/homepage.php" class="menu-item flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-md hover:bg-red-50 hover:text-red-700 <?php echo $currentPage === 'homepage' ? 'active bg-red-50 text-red-700 border-l-4 border-red-600' : ''; ?>">
                     <i class="fas fa-home w-5 mr-3"></i>Ana Sayfa Yönetimi
                 </a>

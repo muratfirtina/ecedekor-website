@@ -25,6 +25,9 @@ $testimonials = fetchAll("SELECT * FROM testimonials WHERE is_active = 1 ORDER B
 // Get categories
 $categories = fetchAll("SELECT * FROM categories WHERE is_active = 1 ORDER BY sort_order");
 
+// Get color palette settings for homepage
+$colorPaletteSettings = fetchOne("SELECT * FROM color_palette_settings WHERE id = 1 AND is_active = 1 AND show_on_homepage = 1");
+
 include 'includes/header.php';
 ?>
 
@@ -200,6 +203,96 @@ include 'includes/header.php';
     </div>
 </section>
 
+<!-- Renk Kartelası Bölümü -->
+<?php if ($colorPaletteSettings): ?>
+<section class="py-20 bg-gradient-to-br from-red-50 via-purple-50 to-pink-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <!-- Sol Taraf - Resim -->
+            <div class="animate-on-scroll order-2 lg:order-1">
+                <a href="<?php echo BASE_URL; ?>/renk-kartelasi.php" class="block group">
+                    <div class="relative rounded-2xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500 transform group-hover:scale-105">
+                        <?php if (!empty($colorPaletteSettings['homepage_image'])): ?>
+                            <img src="<?php echo BASE_URL . htmlspecialchars($colorPaletteSettings['homepage_image']); ?>"
+                                 alt="<?php echo htmlspecialchars($colorPaletteSettings['title']); ?>"
+                                 class="w-full h-96 object-cover">
+                        <?php else: ?>
+                            <!-- Varsayılan renk kartelası görseli -->
+                            <div class="w-full h-96 bg-gradient-to-br from-red-400 via-purple-500 to-pink-500 flex items-center justify-center">
+                                <div class="text-center text-white">
+                                    <i class="fas fa-palette text-8xl mb-4 opacity-80"></i>
+                                    <h3 class="text-3xl font-bold">Renk Kartelamız</h3>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                        <!-- Hover Overlay -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-70 transition-opacity duration-500 flex items-end justify-center pb-8">
+                            <span class="text-white font-semibold text-xl transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                <i class="fas fa-arrow-right mr-2"></i>Renk Kartelasını Görüntüle
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Sağ Taraf - İçerik -->
+            <div class="animate-on-scroll order-1 lg:order-2">
+                <div class="space-y-6">
+                    <div class="inline-flex items-center bg-white px-4 py-2 rounded-full shadow-md">
+                        <i class="fas fa-swatchbook text-red-600 mr-2"></i>
+                        <span class="text-sm font-semibold text-gray-700">Renk Seçenekleri</span>
+                    </div>
+
+                    <h2 class="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+                        <?php echo htmlspecialchars($colorPaletteSettings['title'] ?? 'Renk Kartelamız'); ?>
+                    </h2>
+
+                    <?php if (!empty($colorPaletteSettings['subtitle'])): ?>
+                        <p class="text-2xl text-gray-700 font-medium">
+                            <?php echo htmlspecialchars($colorPaletteSettings['subtitle']); ?>
+                        </p>
+                    <?php endif; ?>
+
+                    <?php if (!empty($colorPaletteSettings['description'])): ?>
+                        <p class="text-lg text-gray-600 leading-relaxed">
+                            <?php echo nl2br(htmlspecialchars($colorPaletteSettings['description'])); ?>
+                        </p>
+                    <?php endif; ?>
+
+                    <div class="flex flex-wrap gap-4 pt-4">
+                        <a href="<?php echo BASE_URL; ?>/renk-kartelasi.php"
+                           class="inline-flex items-center bg-gradient-to-r from-red-600 to-purple-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:from-red-700 hover:to-purple-700 transition duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                            <i class="fas fa-palette mr-2"></i>
+                            Renk Kartelasını İncele
+                        </a>
+                        <a href="<?php echo BASE_URL; ?>/urunler.php"
+                           class="inline-flex items-center bg-white text-gray-800 px-8 py-4 rounded-full font-semibold text-lg border-2 border-gray-300 hover:border-red-600 hover:text-red-600 transition duration-300 shadow-md hover:shadow-lg">
+                            <i class="fas fa-shopping-bag mr-2"></i>
+                            Ürünleri Gör
+                        </a>
+                    </div>
+
+                    <!-- Renk Örnekleri -->
+                    <div class="pt-6">
+                        <div class="flex items-center space-x-3">
+                            <div class="flex -space-x-2">
+                                <div class="w-12 h-12 rounded-full border-4 border-white shadow-lg" style="background-color: #8B4513;"></div>
+                                <div class="w-12 h-12 rounded-full border-4 border-white shadow-lg" style="background-color: #654321;"></div>
+                                <div class="w-12 h-12 rounded-full border-4 border-white shadow-lg" style="background-color: #D2691E;"></div>
+                                <div class="w-12 h-12 rounded-full border-4 border-white shadow-lg" style="background-color: #F5DEB3;"></div>
+                                <div class="w-12 h-12 rounded-full border-4 border-white shadow-lg bg-gradient-to-r from-red-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
+                                    +
+                                </div>
+                            </div>
+                            <span class="text-sm text-gray-600 font-medium">Ve daha fazlası...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
 
 <!-- Sertifikalar ve Güvenlik -->
 <section class="pt-5 pb-20 bg-white">

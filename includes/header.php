@@ -279,6 +279,9 @@
                     <a href="<?php echo BASE_URL; ?>/hakkimizda.php" class="nav-item text-gray-700 hover:text-red-600 font-medium py-2 transition duration-300">
                         Hakkımızda
                     </a>
+                    <a href="<?php echo BASE_URL; ?>/renk-kartelasi.php" class="nav-item text-gray-700 hover:text-red-600 font-medium py-2 transition duration-300">
+                        Renk Kartelamız
+                    </a>
                     <a href="<?php echo BASE_URL; ?>/blog" class="nav-item text-gray-700 hover:text-red-600 font-medium py-2 transition duration-300">
                         Blog
                     </a>
@@ -369,6 +372,9 @@
                 </a>
                 <a href="<?php echo BASE_URL; ?>/hakkimizda.php" class="block px-4 py-3 text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-xl font-medium transition duration-300">
                     <i class="fas fa-info-circle mr-3 w-5"></i>Hakkımızda
+                </a>
+                <a href="<?php echo BASE_URL; ?>/renk-kartelasi.php" class="block px-4 py-3 text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-xl font-medium transition duration-300">
+                    <i class="fas fa-swatchbook mr-3 w-5"></i>Renk Kartelamız
                 </a>
                 <a href="<?php echo BASE_URL; ?>/blog" class="block px-4 py-3 text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-xl font-medium transition duration-300">
                     <i class="fas fa-blog mr-3 w-5"></i>Blog
